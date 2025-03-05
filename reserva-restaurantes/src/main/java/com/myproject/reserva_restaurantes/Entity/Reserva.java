@@ -1,6 +1,9 @@
 package com.myproject.reserva_restaurantes.Entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -18,8 +21,15 @@ public class Reserva {
     private LocalDate data;
     @Column(name = "hora_reserva", nullable = false)
     private LocalTime hora;
-    @Column(nullable = false)
+    @Column(name = "numero_pessoas", nullable = false)
     private int numeroPessoas;
+    @Column(name = "nome_responsavel", nullable = false)
+    private String nome_responsavel;
+    @Column(name = "cpf_responsavel", nullable = false)
+    private String cpf_responsavel;
+    @Column(name = "telefone_responsavel", nullable = false)
+    private String telefone_responsavel;
+
 
     @ManyToOne
     @JoinColumn(name = "id_usuario", nullable = false)
@@ -32,10 +42,15 @@ public class Reserva {
     public Reserva() {
     }
 
-    public Reserva(LocalDate data, LocalTime hora, int numeroPessoas) {
+    public Reserva(LocalDate data, LocalTime hora, int numeroPessoas, String nome_responsavel, String cpf_responsavel, String telefone_responsavel, Usuario usuario, Restaurante restaurante) {
         this.data = data;
         this.hora = hora;
         this.numeroPessoas = numeroPessoas;
+        this.nome_responsavel = nome_responsavel;
+        this.cpf_responsavel = cpf_responsavel;
+        this.telefone_responsavel = telefone_responsavel;
+        this.usuario = usuario;
+        this.restaurante = restaurante;
     }
 
     public long getId() {
@@ -70,11 +85,43 @@ public class Reserva {
         this.numeroPessoas = numeroPessoas;
     }
 
+    public String getNome_responsavel() {
+        return nome_responsavel;
+    }
 
+    public void setNome_responsavel(String nome_responsavel) {
+        this.nome_responsavel = nome_responsavel;
+    }
 
+    public String getCpf_responsavel() {
+        return cpf_responsavel;
+    }
 
+    public void setCpf_responsavel(String cpf_responsavel) {
+        this.cpf_responsavel = cpf_responsavel;
+    }
 
+    public String getTelefone_responsavel() {
+        return telefone_responsavel;
+    }
 
+    public void setTelefone_responsavel(String telefone_responsavel) {
+        this.telefone_responsavel = telefone_responsavel;
+    }
 
+    public Usuario getUsuario() {
+        return usuario;
+    }
 
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public Restaurante getRestaurante() {
+        return restaurante;
+    }
+
+    public void setRestaurante(Restaurante restaurante) {
+        this.restaurante = restaurante;
+    }
 }

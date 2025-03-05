@@ -12,61 +12,52 @@ import java.util.Optional;
 
 
 @Service
-public class reservaService{
+public class reservaService {
 
     @Autowired
-    private static reservaRepository ReservaRepository;
+    private reservaRepository ReservaRepository; // Não deve ser static
 
     public List<Reserva> getReservas() {
-        try{
+        try {
             return ReservaRepository.findAll();
-        }
-        catch (DataAccessException e){
-            System.err.print("Erro ao acessar o banco de dados: " + e.getMessage());
+        } catch (DataAccessException e) {
+            System.err.println("Erro ao acessar o banco de dados: " + e.getMessage());
             return null;
         }
     }
 
-    public static Optional<Reserva> getByIdReservas(long id) {
-        try{
+    public Optional<Reserva> getByIdReservas(long id) { // Não deve ser static
+        try {
             return ReservaRepository.findById(id);
-        }
-        catch (DataAccessException e){
-            System.err.print("Erro ao acessar o banco de dados: " + e.getMessage());
-            return null;
+        } catch (DataAccessException e) {
+            System.err.println("Erro ao acessar o banco de dados: " + e.getMessage());
+            return Optional.empty();
         }
     }
 
     public Reserva saveReservas(Reserva reserva) {
-        try{
+        try {
             return ReservaRepository.save(reserva);
-        }
-        catch (DataAccessException e){
-            System.err.print("Erro ao acessar o banco de dados: " + e.getMessage());
+        } catch (DataAccessException e) {
+            System.err.println("Erro ao acessar o banco de dados: " + e.getMessage());
             return null;
         }
     }
 
     public void deleteReservas(long id) {
-        try{
+        try {
             ReservaRepository.deleteById(id);
-        }
-        catch (DataAccessException e){
-            System.err.print("Erro ao acessar o banco de dados: " + e.getMessage());
+        } catch (DataAccessException e) {
+            System.err.println("Erro ao acessar o banco de dados: " + e.getMessage());
         }
     }
 
     public List<Reserva> getReservasByData(LocalDate data) {
-        try{
+        try {
             return ReservaRepository.findByData(data);
-        }
-        catch (DataAccessException e){
-            System.err.print("Erro ao acessar o banco de dados: " + e.getMessage());
+        } catch (DataAccessException e) {
+            System.err.println("Erro ao acessar o banco de dados: " + e.getMessage());
             return null;
         }
     }
-
-
-
-
 }

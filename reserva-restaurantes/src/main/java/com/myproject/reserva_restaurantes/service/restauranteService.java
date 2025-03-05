@@ -12,49 +12,41 @@ import java.util.List;
 public class restauranteService {
 
     @Autowired
-    private static restauranteRepository RestauranteRepository;
+    private restauranteRepository RestauranteRepository; // Não deve ser static
 
     public List<Restaurante> getRestaurantes() {
-        try{
+        try {
             return RestauranteRepository.findAll();
-        }
-        catch (DataAccessException e){
-            System.err.print("Erro ao acessar o banco de dados: " + e.getMessage());
+        } catch (DataAccessException e) {
+            System.err.println("Erro ao acessar o banco de dados: " + e.getMessage());
             return null;
         }
-
     }
 
     public Restaurante getByIdRestaurantes(long id) {
-        try{
-            return RestauranteRepository.findById(id).get();
-        }
-        catch (DataAccessException e){
-            System.err.print("Erro ao acessar o banco de dados: " + e.getMessage());
+        try {
+            return RestauranteRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Restaurante não encontrado com ID: " + id));
+        } catch (Exception e) {
+            System.err.println("Erro ao acessar o banco de dados: " + e.getMessage());
             return null;
         }
     }
 
     public Restaurante saveRestaurantes(Restaurante restaurante) {
-        try{
+        try {
             return RestauranteRepository.save(restaurante);
-        }
-        catch (DataAccessException e){
-            System.err.print("Erro ao acessar o banco de dados: " + e.getMessage());
+        } catch (DataAccessException e) {
+            System.err.println("Erro ao acessar o banco de dados: " + e.getMessage());
             return null;
         }
     }
 
     public void deleteRestaurantes(long id) {
-        try{
+        try {
             RestauranteRepository.deleteById(id);
-        }
-        catch (DataAccessException e){
-            System.err.print("Erro ao acessar o banco de dados: " + e.getMessage());
+        } catch (DataAccessException e) {
+            System.err.println("Erro ao acessar o banco de dados: " + e.getMessage());
         }
     }
-
-
-
-
 }

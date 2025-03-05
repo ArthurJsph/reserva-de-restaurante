@@ -14,62 +14,79 @@ import java.util.Optional;
 
 
 @RestController
-@RequestMapping("/usuario")
+@RequestMapping("/api/usuario")
 public class usuarioController {
 
     @Autowired
-    private usuarioService UsuarioService;
+    private usuarioService UsuarioService; // Usar camelCase para a variável
 
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<?> getUsuarios() {
-        try{
+        try {
             List<Usuario> usuarios = UsuarioService.getUsuarios();
             return ResponseEntity.ok().body(usuarios);
-        }catch (Exception e){
-            return ResponseEntity.status(500).body("Erro ao buscar usuarios" + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro ao buscar usuários: " + e.getMessage());
         }
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getUsuarioById(@PathVariable Long id) {
-        try{
-            Optional<Usuario> usuarios = Optional.ofNullable(UsuarioService.getByIdUsuarios(id));
-            if (usuarios.isPresent()) {
-                return ResponseEntity.ok(usuarios.get());
+        try {
+            Usuario usuario = UsuarioService.getByIdUsuarios(id);
+            if (usuario != null) {
+                return ResponseEntity.ok(usuario);
             } else {
                 return ResponseEntity.notFound().build();
             }
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro ao buscar usuário por ID: " + e.getMessage());
         }
     }
 
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<?> createUsuario(@RequestBody Usuario usuario) {
-        try{
-            return ResponseEntity.ok().body("Usuario criado");
-        }catch (Exception e){
-            return ResponseEntity.status(500).body("Erro ao criar usuario");
+        try {
+            Usuario novoUsuario = UsuarioService.saveUsuarios(usuario);
+            return ResponseEntity.status(HttpStatus.CREATED).body(novoUsuario);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro ao criar usuário: " + e.getMessage());
         }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUsuario(@PathVariable Long id) {
-        try{
+        try {
             UsuarioService.deleteUsuarios(id);
-            return ResponseEntity.ok().body("Usuario deletado");
-        }catch (Exception e){
-            return ResponseEntity.status(500).body("Erro ao deletar usuario");
+            return ResponseEntity.ok("Usuário deletado com sucesso");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro ao deletar usuário: " + e.getMessage());
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateUsuario(@PathVariable Long id) {
-        try{
-            return ResponseEntity.ok().body("Usuario atualizado");
-        }catch (Exception e){
-            return ResponseEntity.status(500).body("Erro ao atualizar usuario");
+    public ResponseEntity<?> updateUsuario(@PathVariable Long id, @RequestBody Usuario usuarioAtualizado) {
+        try {
+            Usuario usuarioExistente = UsuarioService.getByIdUsuarios(id);
+            if (usuarioExistente != null) {
+                usuarioExistente.setNome(usuarioAtualizado.getNome());
+                usuarioExistente.setCpf(usuarioAtualizado.getCpf());
+                usuarioExistente.setTelefone(usuarioAtualizado.getTelefone());
+                usuarioExistente.setEmail(usuarioAtualizado.getEmail());
+                usuarioExistente.setSenha(usuarioAtualizado.getSenha());
+
+                Usuario usuarioAtualizadoNoBanco = UsuarioService.saveUsuarios(usuarioExistente);
+                return ResponseEntity.ok(usuarioAtualizadoNoBanco);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro ao atualizar usuário: " + e.getMessage());
         }
     }
-
 }

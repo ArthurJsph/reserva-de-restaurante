@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+*{
+    font-family: "Poppins", serif;
+    font-style: normal;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+  html, body {
+    overflow-x: hidden; /* Impede rolagem horizontal */
+    scroll-behavior: smooth; /* Scroll suave */
+  }
+body{
+    background-image: url(./assets/038405de-d1fe-47b1-a008-cfb24a1df37b.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+}
+ 
+
+  
+  /* Garante que o layout principal ocupe toda a altura da viewport */
+  
+
