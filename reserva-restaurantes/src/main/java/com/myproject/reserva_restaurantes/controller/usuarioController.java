@@ -7,6 +7,7 @@ import com.myproject.reserva_restaurantes.service.usuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -47,7 +48,7 @@ public class usuarioController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createUsuario(@RequestBody Usuario usuario) {
+    public ResponseEntity<?> createUsuario(@Validated @RequestBody Usuario usuario) {
         try {
             Usuario novoUsuario = UsuarioService.saveUsuarios(usuario);
             return ResponseEntity.status(HttpStatus.CREATED).body(novoUsuario);

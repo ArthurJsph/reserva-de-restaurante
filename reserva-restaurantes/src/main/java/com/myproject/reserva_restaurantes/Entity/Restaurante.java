@@ -1,5 +1,6 @@
 package com.myproject.reserva_restaurantes.Entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,6 +32,7 @@ public class Restaurante {
 
 
     @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Reserva> reservas;
 
     public Restaurante(String nome, String endereco, int capacidade, LocalTime horarioAbertura, LocalTime horarioFechamento) {
@@ -42,6 +44,7 @@ public class Restaurante {
     }
 
     public Restaurante() {
+        this.reservas = new ArrayList<>();
     }
 
     public long getId() {

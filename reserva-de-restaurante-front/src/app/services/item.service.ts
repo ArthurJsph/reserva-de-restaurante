@@ -11,45 +11,45 @@ private URL = 'http://localhost:8080/api';
 constructor(private http: HttpClient) {}
 //Método para buscar reservas
 getReservas(): Observable<any> {
-return this.http.get(this.URL + '/reservas');
+return this.http.get(this.URL + '/reserva');
 }
 getReservaById(): Observable<any> {
-return this.http.get(this.URL + '/reservas/:id');
+return this.http.get(this.URL + '/reserva/:id');
 }
 
 getReservaByDate(): Observable<any> {
-return this.http.get(this.URL + '/reservas/:date');
+return this.http.get(this.URL + '/reserva/:date');
 }
 
 postReserva(reserva: any): Observable<any> {
-return this.http.post(this.URL + '/reservas', reserva);
+return this.http.post(this.URL + '/reserva', reserva);
 }
 
 updateReserva(id: number, dadosAtualizados: any): Observable<any> {
-  return this.http.put(`${this.URL}/reservas/${id}`, dadosAtualizados);
+  return this.http.put(`${this.URL}/reserva/${id}`, dadosAtualizados);
 }
 
 deleteReserva(id: number): Observable<any> {
-return this.http.delete(this.URL + '/reservas/' + id);
+return this.http.delete(this.URL + '/reserva/' + id);
 }
 
 getRestaurantes(): Observable<any> {
-return this.http.get(this.URL + '/restaurantes');}
+return this.http.get(this.URL + '/restaurante');}
 
 getRestauranteById(): Observable<any> {
-return this.http.get(this.URL + '/restaurantes/:id');
+return this.http.get(this.URL + '/restaurante/:id');
 }
 
 postRestaurante(restaurante: any): Observable<any> {
-return this.http.post(this.URL + '/restaurantes', restaurante);
+return this.http.post(this.URL + '/restaurante', restaurante);
 }
 
 updateRestaurante(restaurante: any): Observable<any> {
-return this.http.put(this.URL + '/restaurantes/' + restaurante.id, restaurante);
+return this.http.put(this.URL + '/restaurante/' + restaurante.id, restaurante);
 }
 
 deleteRestaurante(id: number): Observable<any> {
-return this.http.delete(this.URL + '/restaurantes/' + id);
+return this.http.delete(this.URL + '/restaurante/' + id);
 }
 
 
