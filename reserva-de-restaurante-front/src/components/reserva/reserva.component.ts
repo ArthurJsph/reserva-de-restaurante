@@ -2,11 +2,11 @@ import { Component } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { ItemService } from '../../app/services/item.service'; 
 import { FormsModule } from '@angular/forms';
-
+import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-reserva',
   standalone: true,
-  imports: [FormsModule, HttpClientModule,],
+  imports: [FormsModule, HttpClientModule, CommonModule],
   templateUrl: './reserva.component.html',
 })
 export class ReservaComponent {
