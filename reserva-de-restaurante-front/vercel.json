@@ -1,9 +1,9 @@
 {
-    "version": 2,
-    "routes": [
+    "rewrites": [
       {
-        "src": "/(.*)",
-        "dest": "/dist/reserva-de-restaurante-front/browser/index.html"
+        "source": "/(.*)",
+        "destination": "/index.html"
       }
     ]
   }
+  
