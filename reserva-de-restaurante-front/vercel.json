@@ -1,6 +1,14 @@
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
-  "builds": [{ "src": "dist/reserva-de-restaurante-front/**", "use": "@vercel/static" }]
+  "builds": [
+    {
+      "src": "dist/reserva-de-restaurante-front/browser/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
 }
-
-  
