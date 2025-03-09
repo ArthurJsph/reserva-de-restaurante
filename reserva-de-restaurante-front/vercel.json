@@ -1,14 +1,23 @@
 {
+  "version": 2,
   "builds": [
     {
-      "src": "dist/reserva-de-restaurante-front/browser",
-      "use": "@vercel/static"
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist/reserva-de-restaurante-front/browser"
+      }
     }
   ],
-  "rewrites": [
+  "routes": [
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "src": "/(.*)\\.(js|css|map|json|ico|png|jpg|svg|woff|woff2)$",
+      "headers": { "Cache-Control": "public, max-age=31536000, immutable" },
+      "dest": "/$1.$2"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
   ]
 }
