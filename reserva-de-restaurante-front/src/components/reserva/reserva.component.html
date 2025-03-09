@@ -1,36 +1,46 @@
-<body class="">
-    <div class="flex flex-col items-center justify-center min-h-screen bg-black bg-opacity-50">
+<body class="bg-gray-100">
+    <div class="flex flex-col items-center justify-center min-h-screen p-4">
         <h1 class="text-2xl font-bold text-black mb-4">Reserva</h1>
+
+        <!-- CONTAINER DOS CARDS -->
         <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-8">
-            <div class="bg-white bg-opacity-80 p-8 rounded-lg shadow-lg w-full max-w-md">
-                <form (ngSubmit) = "onSubmit()" class="space-y-4">
-                    <input type="text" placeholder="Nome" class="w-full p-3 rounded-full border border-gray-300" [(ngModel)]="reserva.nome_responsavel" required>
-                    <input type="text" placeholder="cpf" class="w-full p-3 rounded-full border border-gray-300" [(ngModel)]="reserva.cpf_responsavel" required>
-                    <input type="text" placeholder="telefone" class="w-full p-3 rounded-full border border-gray-300" [(ngModel)]="reserva.telefone_responsavel" required>
-                    <input type="text" placeholder="restaurante" class="w-full p-3 rounded-full border border-gray-300" [(ngModel)]="reserva.nome_restaurante" required>
-                    <input type="text" placeholder="data" class="w-full p-3 rounded-full border border-gray-300" [(ngModel)]="reserva.data_reserva" required>
+            
+            <!-- FORMULÁRIO DE RESERVA -->
+            <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md min-h-[450px] flex flex-col justify-between">
+                <form (ngSubmit)="onSubmit()" class="space-y-4 flex-grow">
+                    <input type="text" placeholder="Nome" class="w-full p-3 rounded-full border border-gray-300" [(ngModel)]="reserva.nome_responsavel" name="nome_responsavel" required>
+                    <input type="text" placeholder="CPF" class="w-full p-3 rounded-full border border-gray-300" [(ngModel)]="reserva.cpf_responsavel" name="cpf_responsavel" required>
+                    <input type="text" placeholder="Telefone" class="w-full p-3 rounded-full border border-gray-300" [(ngModel)]="reserva.telefone_responsavel" name="telefone_responsavel" required>
+                    <input type="text" placeholder="Restaurante" class="w-full p-3 rounded-full border border-gray-300" [(ngModel)]="reserva.nome_restaurante" name="nome_restaurante" required>
+                    <input type="date" class="w-full p-3 rounded-full border border-gray-300" [(ngModel)]="reserva.data_reserva" name="data_reserva" required>
+                    <input type="time" class="w-full p-3 rounded-full border border-gray-300" [(ngModel)]="reserva.hora_reserva" name="hora_reserva" required>
+                    <input type="number" placeholder="Número de Pessoas" class="w-full p-3 rounded-full border border-gray-300" [(ngModel)]="reserva.numero_pessoas" name="numero_pessoas" required>
+                    <input type="number" placeholder="ID do Restaurante" class="w-full p-3 rounded-full border border-gray-300" [(ngModel)]="reserva.id_restaurante" name="id_restaurante" required>
+                    
                     <button type="submit" class="w-full p-3 rounded-full bg-red-600 text-white font-bold">Reservar</button>
                 </form>
             </div>
-            <div class="bg-gray-100 bg-opacity-80 p-8 rounded-lg shadow-lg w-full max-w-md">
+
+            <!-- LISTA DE RESERVAS -->
+            <div class="bg-gray-100 p-8 rounded-lg shadow-lg w-full max-w-md">
                 <h2 class="text-xl font-bold text-red-600 mb-4">Lista de Reservas</h2>
                 <div class="space-y-4">
-                    <div *ngFor="let reserva of reservas; let i = index">
-                        <h3 class="font-bold">Reserva nº{{i + 1}}:</h3>
+                    <div *ngFor="let reserva of reservas; let i = index" class="p-4 bg-white rounded-lg shadow-md">
+                        <h3 class="font-bold">Reserva nº{{i + 1}}</h3>
                         <ul class="list-disc list-inside">
-                            <li>{{reserva.nome_restaurante}}</li>
-                            <li>{{reserva.data_reserva}}</li>
-                            <li>{{reserva.numero_pessoas}}</li>
+                            <li>Restaurante: {{reserva.nome_restaurante}}</li>
+                            <li>Data: {{reserva.data_reserva}}</li>
+                            <li>Hora: {{reserva.hora_reserva}}</li>
+                            <li>Pessoas: {{reserva.numero_pessoas}}</li>
                         </ul>
                         <div class="flex space-x-4 mt-2">
-                            <button class="text-red-600" (click)="excluirReserva(reserva.id) ">Excluir reserva</button>
-                            <button class="text-blue-600"(click)="abrirModalAtualizacao(reserva)">Atualizar reserva</button>
+                            <button class="text-red-600 font-bold" (click)="excluirReserva(reserva.id)">Excluir</button>
+                            <button class="text-blue-600 font-bold" (click)="abrirModalAtualizacao(reserva)">Atualizar</button>
                         </div>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 </body>
-
-

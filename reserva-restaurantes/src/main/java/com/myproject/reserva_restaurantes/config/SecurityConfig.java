@@ -30,7 +30,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200")); // Permite requisições do frontend na porta 4200
+        configuration.setAllowedOrigins(Arrays.asList("https://reserva-de-restaurante.vercel.app")); // Permite requisições do frontend na porta 4200
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE")); // Métodos HTTP permitidos
         configuration.setAllowedHeaders(Arrays.asList("*")); // Headers permitidos
         configuration.setAllowCredentials(true); // Permite credenciais (cookies, tokens, etc.)
