@@ -1,6 +1,6 @@
 package com.myproject.reserva_restaurantes.Entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,11 +34,9 @@ public class Usuario {
     @Column(nullable = false)
     private String senha;
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference
+    @JsonIgnore
     private List<Reserva> reservas;
 
     public Usuario(String nome, String cpf, String telefone, String email, String senha) {
