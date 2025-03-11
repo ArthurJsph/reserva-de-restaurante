@@ -23,7 +23,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Habilita CORS
                 .csrf(csrf -> csrf.disable()) // Desabilita CSRF (opcional para APIs RESTful)
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll() // Permite todas as requisições sem autenticação
+                        .anyRequest().authenticated()
                 );
 
         return http.build();

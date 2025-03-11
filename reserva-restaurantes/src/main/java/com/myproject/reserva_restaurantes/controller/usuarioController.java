@@ -69,25 +69,4 @@ public class usuarioController {
         }
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateUsuario(@PathVariable Long id, @RequestBody Usuario usuarioAtualizado) {
-        try {
-            Usuario usuarioExistente = UsuarioService.getByIdUsuarios(id);
-            if (usuarioExistente != null) {
-                usuarioExistente.setNome(usuarioAtualizado.getNome());
-                usuarioExistente.setCpf(usuarioAtualizado.getCpf());
-                usuarioExistente.setTelefone(usuarioAtualizado.getTelefone());
-                usuarioExistente.setEmail(usuarioAtualizado.getEmail());
-                usuarioExistente.setSenha(usuarioAtualizado.getSenha());
-
-                Usuario usuarioAtualizadoNoBanco = UsuarioService.saveUsuarios(usuarioExistente);
-                return ResponseEntity.ok(usuarioAtualizadoNoBanco);
-            } else {
-                return ResponseEntity.notFound().build();
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Erro ao atualizar usuário: " + e.getMessage());
-        }
-    }
 }

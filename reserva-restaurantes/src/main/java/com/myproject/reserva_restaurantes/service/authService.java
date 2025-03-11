@@ -15,11 +15,5 @@ public class authService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public boolean authenticate(String nome, String rawPassword) {
-        Usuario user = userRepository.findByNome(nome)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        // Comparar a senha em texto plano com o hash do BD
-        return passwordEncoder.matches(rawPassword, user.getSenha());
-    }
 }
