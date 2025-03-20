@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
-import { ItemService } from '../../app/services/item.service'; 
+import { ReservaService } from '../../services/reserva/reserva.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { catchError } from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs';
 @Component({
   selector: 'app-reserva',
   standalone: true,
@@ -24,14 +26,14 @@ export class ReservaComponent {
     id_restaurante: 0
   };
 
-  constructor(private itemService: ItemService) {}
+  constructor(private reservaService: ReservaService) {}
 
   ngOnInit(): void {
     this.carregarReservas();
   }
 
   carregarReservas(): void {
-    this.itemService.getReservas().subscribe({
+    this.reservaService.getReservas().subscribe({
       next: (data) => {
         this.reservas = data;
       },
@@ -44,7 +46,7 @@ export class ReservaComponent {
   onSubmit(): void {
     console.log('Enviando reserva para o backend:', this.reserva);
 
-    this.itemService.postReserva(this.reserva).subscribe({
+    this.reservaService.postReserva(this.reserva).subscribe({
       next: (response) => {
         console.log('Reserva criada com sucesso:', response);
 
@@ -61,7 +63,7 @@ export class ReservaComponent {
   }
 
   excluirReserva(id: number): void {
-    this.itemService.deleteReserva(id).subscribe({
+    this.reservaService.deleteReserva(id).subscribe({
       next: () => {
         console.log('Reserva excluída com sucesso');
         this.reservas = this.reservas.filter(reserva => reserva.id !== id);
@@ -78,7 +80,7 @@ export class ReservaComponent {
   }
 
   atualizarReserva(id: number, dadosAtualizados: any): void {
-    this.itemService.updateReserva(id, dadosAtualizados).subscribe({
+    this.reservaService.updateReserva(id, dadosAtualizados).subscribe({
       next: (response) => {
         console.log('Reserva atualizada com sucesso:', response);
 

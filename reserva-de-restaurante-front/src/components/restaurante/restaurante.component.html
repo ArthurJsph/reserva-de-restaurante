@@ -1,7 +1,9 @@
 <body class="bg-gray-100">
   <div class="container mx-auto p-4">
+    <div *ngIf="erroCarregamento" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+      <span class="block sm:inline">{{ erroCarregamento }}</span>
+    </div>
     <h1 class="text-3xl font-bold text-center mb-8">Restaurantes</h1>
-
     <!-- Lista de Restaurantes -->
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
       <div *ngFor="let restaurante of restaurantes" class="bg-white shadow-md rounded-lg p-4 m-1 w-80">

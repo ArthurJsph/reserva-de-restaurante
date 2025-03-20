@@ -1,0 +1,187 @@
+<div class="flex">
+    <!-- Sidebar -->
+    <div class="w-64 bg-gray-800 text-white h-screen fixed">
+        <div class="p-6 border-b border-gray-700">
+            <div class="text-xl font-bold">Reserva Gourmet<span class="text-sm bg-blue-500 px-2 py-1 rounded">Admin</span></div>
+        </div>
+        <ul class="mt-4">
+            <li class="hover:bg-gray-700">
+                <a href="#" class="flex items-center p-3">
+                    <span class="mr-2">📊</span> Dashboard
+                </a>
+            </li>
+            <li class="hover:bg-gray-700">
+                <a href="#" class="flex items-center p-3">
+                    <span class="mr-2">🍽️</span> Restaurantes
+                </a>
+            </li>
+            <li class="hover:bg-gray-700">
+                <a href="#" class="flex items-center p-3">
+                    <span class="mr-2">📅</span> Reservas
+                </a>
+            </li>
+            <li class="hover:bg-gray-700">
+                <a href="#" class="flex items-center p-3">
+                    <span class="mr-2">👥</span> Usuários
+                </a>
+            </li>
+            <li class="hover:bg-gray-700">
+                <a href="#" class="flex items-center p-3">
+                    <span class="mr-2">⚙️</span> Configurações
+                </a>
+            </li>
+            <li class="hover:bg-gray-700">
+                <a href="#" class="flex items-center p-3">
+                    <span class="mr-2">📤</span> Sair
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Conteúdo Principal -->
+    <div class="flex-1 ml-64 p-6">
+        <!-- Top Bar -->
+        <div class="bg-white p-4 shadow-md flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold">Dashboard</h1>
+            <div class="flex items-center gap-4">
+                <div class="relative">
+                    <input type="text" placeholder="Buscar..." class="pl-10 pr-4 py-2 border rounded-lg">
+                    <span class="absolute left-3 top-2.5 text-gray-500">🔍</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="relative">
+                        <span class="text-gray-700">🔔</span>
+                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs px-1.5 rounded-full">3</span>
+                    </div>
+                    <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">AD</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estatísticas -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div class="bg-white p-6 rounded-lg shadow-md flex items-center">
+                <div class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center text-white text-2xl mr-4">
+                    🍽️
+                </div>
+                <div>
+                    <h3 class="text-2xl font-bold">48</h3>
+                    <p class="text-gray-600">Restaurantes</p>
+                </div>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md flex items-center">
+                <div class="w-12 h-12 bg-yellow-500 rounded-lg flex items-center justify-center text-white text-2xl mr-4">
+                    📅
+                </div>
+                <div>
+                    <h3 class="text-2xl font-bold">156</h3>
+                    <p class="text-gray-600">Reservas Hoje</p>
+                </div>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md flex items-center">
+                <div class="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center text-white text-2xl mr-4">
+                    👥
+                </div>
+                <div>
+                    <h3 class="text-2xl font-bold">1,243</h3>
+                    <p class="text-gray-600">Usuários Ativos</p>
+                </div>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md flex items-center">
+                <div class="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center text-white text-2xl mr-4">
+                    💰
+                </div>
+                <div>
+                    <h3 class="text-2xl font-bold">R$9,854</h3>
+                    <p class="text-gray-600">Faturamento Mensal</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Restaurantes Recentes -->
+        <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+            <h2 class="text-xl font-bold mb-4">Restaurantes Recentes</h2>
+            <table class="w-full">
+                <thead>
+                    <tr>
+                        <th class="text-left p-2">Nome</th>
+                        <th class="text-left p-2">Categoria</th>
+                        <th class="text-left p-2">Endereço</th>
+                        <th class="text-left p-2">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="hover:bg-gray-100">
+                        <td class="p-2">Cantina Bella Napoli</td>
+                        <td class="p-2">Italiana</td>
+                        <td class="p-2">Rua das Flores, 123</td>
+                        <td class="p-2">
+                            <span class="px-2 py-1 rounded-full bg-green-100 text-green-800">Ativo</span>
+                        </td>
+                    </tr>
+                    <tr class="hover:bg-gray-100">
+                        <td class="p-2">Sushi Nakamura</td>
+                        <td class="p-2">Japonesa</td>
+                        <td class="p-2">Av. Paulista, 1500</td>
+                        <td class="p-2">
+                            <span class="px-2 py-1 rounded-full bg-green-100 text-green-800">Ativo</span>
+                        </td>
+                    </tr>
+                    <tr class="hover:bg-gray-100">
+                        <td class="p-2">Churrascaria Rio Grande</td>
+                        <td class="p-2">Churrascaria</td>
+                        <td class="p-2">Rua das Palmeiras, 789</td>
+                        <td class="p-2">
+                            <span class="px-2 py-1 rounded-full bg-yellow-100 text-yellow-800">Pendente</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Últimas Reservas -->
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-xl font-bold mb-4">Últimas Reservas</h2>
+            <table class="w-full">
+                <thead>
+                    <tr>
+                        <th class="text-left p-2">ID</th>
+                        <th class="text-left p-2">Cliente</th>
+                        <th class="text-left p-2">Restaurante</th>
+                        <th class="text-left p-2">Data/Hora</th>
+                        <th class="text-left p-2">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="hover:bg-gray-100">
+                        <td class="p-2">#12345</td>
+                        <td class="p-2">João Silva</td>
+                        <td class="p-2">Cantina Bella Napoli</td>
+                        <td class="p-2">15/10/2023 20:00</td>
+                        <td class="p-2">
+                            <span class="px-2 py-1 rounded-full bg-green-100 text-green-800">Confirmada</span>
+                        </td>
+                    </tr>
+                    <tr class="hover:bg-gray-100">
+                        <td class="p-2">#12346</td>
+                        <td class="p-2">Maria Oliveira</td>
+                        <td class="p-2">Sushi Nakamura</td>
+                        <td class="p-2">15/10/2023 19:30</td>
+                        <td class="p-2">
+                            <span class="px-2 py-1 rounded-full bg-yellow-100 text-yellow-800">Pendente</span>
+                        </td>
+                    </tr>
+                    <tr class="hover:bg-gray-100">
+                        <td class="p-2">#12347</td>
+                        <td class="p-2">Carlos Santos</td>
+                        <td class="p-2">Bistrô da Praça</td>
+                        <td class="p-2">16/10/2023 13:00</td>
+                        <td class="p-2">
+                            <span class="px-2 py-1 rounded-full bg-green-100 text-green-800">Confirmada</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

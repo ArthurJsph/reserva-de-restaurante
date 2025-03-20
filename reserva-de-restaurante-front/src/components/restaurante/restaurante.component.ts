@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ItemService } from '../../app/services/item.service'; 
+import { RestauranteService } from '../../services/restaurante/restaurante.service';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 @Component({
@@ -11,10 +11,10 @@ import { RouterModule } from '@angular/router';
 export class RestauranteComponent implements OnInit {
   restaurantes: Restaurante[] = [];
   pratos: Prato[] = [];
-  erroCarregamento = false; // Flag para controle de erro
+  erroCarregamento : String = ''; // Flag para controle de erro
   isLoading = true; // Flag para estado de carregamento
 
-  constructor(private itemService: ItemService) {}
+  constructor(private restauranteService: RestauranteService) {}
 
   ngOnInit(): void {
     this.carregarDados();
@@ -22,27 +22,27 @@ export class RestauranteComponent implements OnInit {
 
   carregarDados(): void {
     this.isLoading = true;
-    this.erroCarregamento = false;
+    this.erroCarregamento = '';
 
     // Carregar restaurantes
-    this.itemService.getRestaurantes().subscribe({
+    this.restauranteService.getRestaurantes().subscribe({
       next: (data: Restaurante[]) => {
         this.restaurantes = data;
       },
       error: (error) => {
-        this.erroCarregamento = true;
+        this.erroCarregamento = 'Erro ao carregar restaurantes. Tente novamente mais tarde.';
         console.error('Erro ao carregar restaurantes:', error);
       },
       complete: () => this.isLoading = false
     });
 
     // Carregar pratos
-    this.itemService.getPratos().subscribe({
+    this.restauranteService.getPratos().subscribe({
       next: (data: Prato[]) => {
         this.pratos = data;
       },
       error: (error) => {
-        this.erroCarregamento = true;
+        this.erroCarregamento = 'Erro ao carregar pratos. Tente novamente mais tarde.';
         console.error('Erro ao carregar pratos:', error);
       }
     });

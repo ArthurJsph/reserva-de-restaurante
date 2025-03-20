@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/restaurante")
-@CrossOrigin(origins = "https://reserva-de-restaurante.vercel.app")
+@CrossOrigin(origins = "http://localhost:4200")
 public class restauranteController {
 
     @Autowired

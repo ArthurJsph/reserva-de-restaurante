@@ -16,11 +16,11 @@ public class pratosPrincipais {
     @Column(name="nome",nullable = false)
     private String nome;
     @Column(name="avaliacao",nullable = false)
-    private String avaliacao;
+    private Double avaliacao;
     @Column(name="imagem_url",nullable = false)
     private String imagem_url;
 
-    public pratosPrincipais(long id, String nome, String avaliacao, String imagem_url) {
+    public pratosPrincipais(long id, String nome, Double avaliacao, String imagem_url) {
         this.id = id;
         this.nome = nome;
         this.avaliacao = avaliacao;

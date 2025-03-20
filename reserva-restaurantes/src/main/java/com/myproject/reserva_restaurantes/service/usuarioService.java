@@ -1,11 +1,14 @@
 package com.myproject.reserva_restaurantes.service;
 
 import com.myproject.reserva_restaurantes.Entity.Usuario;
+import com.myproject.reserva_restaurantes.Entity.Role;
 import com.myproject.reserva_restaurantes.repository.usuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+
 import java.util.List;
 import java.util.Optional;
 
@@ -13,7 +16,10 @@ import java.util.Optional;
 public class usuarioService {
 
     @Autowired
-    private usuarioRepository UsuarioRepository; // Não deve ser static
+    private usuarioRepository UsuarioRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public List<Usuario> getUsuarios() {
         try {
@@ -34,12 +40,19 @@ public class usuarioService {
         }
     }
 
+    public Optional<Usuario> findByEmail(String email) {
+        return UsuarioRepository.findByEmail(email);
+    }
+
     public Usuario saveUsuarios(Usuario usuario) {
         try {
-            return UsuarioRepository.save(usuario);
+            // Codifica a senha antes de salvar
+            usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
+            return UsuarioRepository.save(usuario); // Usa o repositório injetado
         } catch (DataAccessException e) {
+            // Log do erro e lança a exceção para ser tratada no controller
             System.err.println("Erro ao acessar o banco de dados: " + e.getMessage());
-            return null;
+            throw new RuntimeException("Erro ao salvar usuário no banco de dados", e);
         }
     }
 

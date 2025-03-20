@@ -1,12 +1,12 @@
 <body class="flex items-center justify-center min-h-screen bg-gray-900 bg-opacity-50">
     <div class="bg-white bg-opacity-80 p-8 rounded-lg shadow-lg w-80">
         <h1 class="text-2xl font-bold text-center mb-6">Login</h1>
-        <form>
+        <form (ngSubmit)="login()">
             <div class="mb-4">
-                <input type="email" placeholder="Email" class="w-full p-4 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-500">
+                <input type="email" placeholder="Email" class="w-full p-4 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-500" [(ngModel)]="email">
             </div>
             <div class="mb-4">
-                <input type="password" placeholder="Senha" class="w-full p-4 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-500">
+                <input type="password" placeholder="Senha" class="w-full p-4 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-500" [(ngModel)]="senha">
             </div>
             <div class="mb-6">
                 <button type="submit" class="w-full p-4 rounded-full bg-yellow-500 text-white font-bold">LOGIN</button>

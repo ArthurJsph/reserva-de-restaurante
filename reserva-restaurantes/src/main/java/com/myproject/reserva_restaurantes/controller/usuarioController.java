@@ -2,6 +2,7 @@ package com.myproject.reserva_restaurantes.controller;
 
 import com.myproject.reserva_restaurantes.Entity.Reserva;
 import com.myproject.reserva_restaurantes.Entity.Usuario;
+import com.myproject.reserva_restaurantes.dto.UsuarioDTO;
 import com.myproject.reserva_restaurantes.service.reservaService;
 import com.myproject.reserva_restaurantes.service.usuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,11 +49,20 @@ public class usuarioController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createUsuario(@Validated @RequestBody Usuario usuario) {
+    public ResponseEntity<?> createUsuario(@RequestBody UsuarioDTO usuarioDTO) {
         try {
-            Usuario novoUsuario = UsuarioService.saveUsuarios(usuario);
-            return ResponseEntity.status(HttpStatus.CREATED).body(novoUsuario);
+            Usuario usuario = new Usuario();
+            usuario.setEmail(usuarioDTO.getEmail());
+            usuario.setSenha(usuarioDTO.getSenha());
+            usuario.setRole(usuarioDTO.getRole());
+
+            // Salva o usuário no banco de dados
+            Usuario usuarioSalvo = UsuarioService.saveUsuarios(usuario); // Corrigido para usar o service
+
+            // Retorna o usuário salvo com status HTTP 201 (CREATED)
+            return ResponseEntity.status(HttpStatus.CREATED).body(usuarioSalvo);
         } catch (Exception e) {
+            // Em caso de erro, retorna status HTTP 500 (INTERNAL_SERVER_ERROR) com a mensagem de erro
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Erro ao criar usuário: " + e.getMessage());
         }

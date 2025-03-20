@@ -8,39 +8,9 @@ import { catchError } from 'rxjs/operators';
 })
 export class ItemService {
   //URL do backend
-private URL = 'https://reserva-de-restaurante-production.up.railway.app/api';
+private URL = 'http://localhost:8080/api';
 //Injeção de dependência do HttpClient
 constructor(private http: HttpClient) {}
-//Método para buscar reservas
-// Método para buscar todas as reservas
-getReservas(): Observable<any> {
-  return this.http.get(`${this.URL}/reserva`).pipe(catchError(this.handleError));
-}
-
-// Método para buscar reserva por ID
-getReservaById(id: number): Observable<any> {
-  return this.http.get(`${this.URL}/reserva/${id}`).pipe(catchError(this.handleError));
-}
-
-// Método para buscar reserva por data
-getReservaByDate(date: string): Observable<any> {
-  return this.http.get(`${this.URL}/reserva?date=${date}`).pipe(catchError(this.handleError));
-}
-
-// Criar uma nova reserva
-postReserva(reserva: any): Observable<any> {
-  return this.http.post(`${this.URL}/reserva`, reserva).pipe(catchError(this.handleError));
-}
-
-// Atualizar uma reserva existente
-updateReserva(id: number, dadosAtualizados: any): Observable<any> {
-  return this.http.put(`${this.URL}/reserva/${id}`, dadosAtualizados).pipe(catchError(this.handleError));
-}
-
-// Deletar uma reserva
-deleteReserva(id: number): Observable<any> {
-  return this.http.delete(`${this.URL}/reserva/${id}`).pipe(catchError(this.handleError));
-}
 
 // Buscar todos os restaurantes
 getRestaurantes(): Observable<any> {
