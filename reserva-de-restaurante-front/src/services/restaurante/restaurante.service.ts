@@ -10,6 +10,7 @@ import { environment } from '../../environments/environment';
 export class RestauranteService {
 constructor(private http: HttpClient) {}
 
+
 // Buscar todos os restaurantes
 getRestaurantes(): Observable<any> {
   return this.http.get(`${environment.apiUrl}/restaurante`).pipe(catchError(this.handleError));

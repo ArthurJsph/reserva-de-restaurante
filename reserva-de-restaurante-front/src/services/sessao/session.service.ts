@@ -1,31 +1,38 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root'  // ← Isso é crucial!
 })
-
 export class SessionService {
-  private sessionData: { [key: string]: any } = {};
+  private sessionCache: { [key: string]: any } = {};
 
-  constructor() { }
-
-  // Armazena um valor na sessão
   set(key: string, value: any): void {
-    this.sessionData[key] = value;
+    console.log(`Salvando no sessionStorage -> Chave: ${key}, Valor:`, value);
+    this.sessionCache[key] = value;
+    sessionStorage.setItem(key, JSON.stringify(value));
   }
 
-  // Obtém um valor da sessão
   get(key: string): any {
-    return this.sessionData[key];
+    if (this.sessionCache[key] !== undefined) {
+      return this.sessionCache[key];
+    }
+    try {
+      const data = sessionStorage.getItem(key);
+      this.sessionCache[key] = data ? JSON.parse(data) : null;
+      return this.sessionCache[key];
+    } catch (e) {
+      console.error('Error reading from sessionStorage', e);
+      return null;
+    }
   }
 
-  // Remove um valor da sessão
   remove(key: string): void {
-    delete this.sessionData[key];
+    delete this.sessionCache[key];
+    sessionStorage.removeItem(key);
   }
 
-  // Limpa toda a sessão
   clear(): void {
-    this.sessionData = {};
+    this.sessionCache = {};
+    sessionStorage.clear();
   }
 }

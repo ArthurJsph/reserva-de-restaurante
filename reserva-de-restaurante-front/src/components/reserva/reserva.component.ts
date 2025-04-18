@@ -13,7 +13,7 @@ import { Observable, throwError } from 'rxjs';
 })
 export class ReservaComponent {
   
-  reservas: any[] = [];
+  submitted = false;
 
   reserva = {
     nome_restaurante: '',
@@ -28,69 +28,22 @@ export class ReservaComponent {
 
   constructor(private reservaService: ReservaService) {}
 
-  ngOnInit(): void {
-    this.carregarReservas();
-  }
-
-  carregarReservas(): void {
-    this.reservaService.getReservas().subscribe({
-      next: (data) => {
-        this.reservas = data;
-      },
-      error: (error) => {
-        console.error('Erro ao carregar reservas:', error);
-      }
-    });
-  }
-
   onSubmit(): void {
-    console.log('Enviando reserva para o backend:', this.reserva);
+    this.submitted = true;
 
     this.reservaService.postReserva(this.reserva).subscribe({
-      next: (response) => {
-        console.log('Reserva criada com sucesso:', response);
-
-        // Adiciona a reserva à lista SEM modificar o objeto original
-        this.reservas.push({ ...response });
-
-        // Limpa o formulário após o envio bem-sucedido
+      next: () => {
+        alert('Reserva criada com sucesso!');
         this.limparFormulario();
+        
+        // Reset submitted status after 3 seconds
+        setTimeout(() => {
+          this.submitted = false;
+        }, 3000);
       },
       error: (error) => {
         console.error('Erro ao criar reserva:', error);
-      }
-    });
-  }
-
-  excluirReserva(id: number): void {
-    this.reservaService.deleteReserva(id).subscribe({
-      next: () => {
-        console.log('Reserva excluída com sucesso');
-        this.reservas = this.reservas.filter(reserva => reserva.id !== id);
-      },
-      error: (error) => {
-        console.error('Erro ao excluir reserva:', error);
-      }
-    });
-  }
-
-  abrirModalAtualizacao(reserva: any): void {
-    console.log('Abrindo modal de atualização para reserva:', reserva);
-    // Aqui você pode implementar lógica para edição
-  }
-
-  atualizarReserva(id: number, dadosAtualizados: any): void {
-    this.reservaService.updateReserva(id, dadosAtualizados).subscribe({
-      next: (response) => {
-        console.log('Reserva atualizada com sucesso:', response);
-
-        const index = this.reservas.findIndex(reserva => reserva.id === id);
-        if (index !== -1) {
-          this.reservas[index] = { ...this.reservas[index], ...dadosAtualizados };
-        }
-      },
-      error: (error) => {
-        console.error('Erro ao atualizar reserva:', error);
+        this.submitted = false;
       }
     });
   }

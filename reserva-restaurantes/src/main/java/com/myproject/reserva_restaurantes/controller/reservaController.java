@@ -2,6 +2,8 @@ package com.myproject.reserva_restaurantes.controller;
 
 import com.myproject.reserva_restaurantes.Entity.Reserva;
 import com.myproject.reserva_restaurantes.service.reservaService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,20 +15,29 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/reserva")
-@CrossOrigin(origins = "https://reserva-de-restaurante.vercel.app")
 public class reservaController {
 
     @Autowired
     private reservaService ReservaService;
 
+    private static final Logger logger = LoggerFactory.getLogger(reservaController.class);
+
+    // Método auxiliar para tratar exceções
+    private ResponseEntity<?> handleException(Exception e, String errorMessage) {
+        logger.error(errorMessage, e);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage + ": " + e.getMessage());
+    }
+
     @GetMapping
     public ResponseEntity<?> getReservas() {
         try {
             List<Reserva> reservas = ReservaService.getReservas();
+            if (reservas.isEmpty()) {
+                return ResponseEntity.noContent().build(); // Retorna 204 se não houver reservas
+            }
             return ResponseEntity.ok(reservas);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Erro ao buscar reservas: " + e.getMessage());
+            return handleException(e, "Erro ao buscar reservas");
         }
     }
 
@@ -34,10 +45,12 @@ public class reservaController {
     public ResponseEntity<?> getReservasByData(@RequestParam LocalDate data) {
         try {
             List<Reserva> reservas = ReservaService.getReservasByData(data);
+            if (reservas.isEmpty()) {
+                return ResponseEntity.noContent().build();
+            }
             return ResponseEntity.ok(reservas);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Erro ao buscar reservas por data: " + e.getMessage());
+            return handleException(e, "Erro ao buscar reservas por data");
         }
     }
 
@@ -45,36 +58,39 @@ public class reservaController {
     public ResponseEntity<?> getReservaById(@PathVariable Long id) {
         try {
             Optional<Reserva> reserva = ReservaService.getByIdReservas(id);
-            if (reserva.isPresent()) {
-                return ResponseEntity.ok(reserva.get());
-            } else {
+            if (reserva.isEmpty()) {
                 return ResponseEntity.notFound().build();
             }
+            return ResponseEntity.ok(reserva.get());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Erro ao buscar reserva por ID: " + e.getMessage());
+            return handleException(e, "Erro ao buscar reserva por ID");
         }
     }
 
     @PostMapping
     public ResponseEntity<?> create(@RequestBody Reserva reserva) {
         try {
+            if (reserva == null) {
+                return ResponseEntity.badRequest().body("O corpo da requisição não pode ser nulo");
+            }
             Reserva novaReserva = ReservaService.saveReservas(reserva);
             return ResponseEntity.status(HttpStatus.CREATED).body(novaReserva);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Erro ao criar reserva: " + e.getMessage());
+            return handleException(e, "Erro ao criar reserva");
         }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteReservas(@PathVariable Long id) {
         try {
+            Optional<Reserva> reserva = ReservaService.getByIdReservas(id);
+            if (reserva.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
             ReservaService.deleteReservas(id);
             return ResponseEntity.ok("Reserva deletada com sucesso");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Erro ao deletar reserva: " + e.getMessage());
+            return handleException(e, "Erro ao deletar reserva");
         }
     }
 
@@ -82,24 +98,22 @@ public class reservaController {
     public ResponseEntity<?> updateReservas(@PathVariable Long id, @RequestBody Reserva reservaAtualizada) {
         try {
             Optional<Reserva> reservaExistente = ReservaService.getByIdReservas(id);
-            if (reservaExistente.isPresent()) {
-                Reserva reserva = reservaExistente.get();
-                reserva.setData(reservaAtualizada.getData());
-                reserva.setHora(reservaAtualizada.getHora());
-                reserva.setNumeroPessoas(reservaAtualizada.getNumeroPessoas());
-                reserva.setNome_responsavel(reservaAtualizada.getNome_responsavel());
-                reserva.setCpf_responsavel(reservaAtualizada.getCpf_responsavel());
-                reserva.setTelefone_responsavel(reservaAtualizada.getTelefone_responsavel());
-                reserva.setId(reservaAtualizada.getId());
-
-                Reserva reservaAtualizadaNoBanco = ReservaService.saveReservas(reserva);
-                return ResponseEntity.ok(reservaAtualizadaNoBanco);
-            } else {
+            if (reservaExistente.isEmpty()) {
                 return ResponseEntity.notFound().build();
             }
+
+            Reserva reserva = reservaExistente.get();
+            reserva.setData(reservaAtualizada.getData());
+            reserva.setHora(reservaAtualizada.getHora());
+            reserva.setNumeroPessoas(reservaAtualizada.getNumeroPessoas());
+            reserva.setNome_responsavel(reservaAtualizada.getNome_responsavel());
+            reserva.setCpf_responsavel(reservaAtualizada.getCpf_responsavel());
+            reserva.setTelefone_responsavel(reservaAtualizada.getTelefone_responsavel());
+
+            Reserva reservaAtualizadaNoBanco = ReservaService.saveReservas(reserva);
+            return ResponseEntity.ok(reservaAtualizadaNoBanco);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Erro ao atualizar reserva: " + e.getMessage());
+            return handleException(e, "Erro ao atualizar reserva");
         }
     }
 }

@@ -2,21 +2,30 @@ import { Component, OnInit } from '@angular/core';
 import { RestauranteService } from '../../services/restaurante/restaurante.service';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+
+interface Restaurante {
+  id: number;
+  nome: string;
+  endereco: string;
+  tipoCozinha: string;
+  capacidade: number;
+  imagem_url: string;
+}
+
 @Component({
   selector: 'app-restaurante',
   imports: [CommonModule, RouterModule],
   templateUrl: './restaurante.component.html',
   styleUrls: ['./restaurante.component.css'] // Corrigido aqui
 })
-export class RestauranteComponent implements OnInit {
-  restaurantes: Restaurante[] = [];
-  pratos: Prato[] = [];
+export class RestauranteComponent {
+ restaurantes: Restaurante[] = [];
   erroCarregamento : String = ''; // Flag para controle de erro
   isLoading = true; // Flag para estado de carregamento
 
   constructor(private restauranteService: RestauranteService) {}
 
-  ngOnInit(): void {
+  gOnInit(): void {
     this.carregarDados();
   }
 
@@ -24,10 +33,13 @@ export class RestauranteComponent implements OnInit {
     this.isLoading = true;
     this.erroCarregamento = '';
 
-    // Carregar restaurantes
     this.restauranteService.getRestaurantes().subscribe({
       next: (data: Restaurante[]) => {
-        this.restaurantes = data;
+        // Adiciona fallback para imagem_url
+        this.restaurantes = data.map(restaurante => ({
+          ...restaurante,
+          imagem_url: restaurante.imagem_url || 'assets/images/default-restaurant.jpg'
+        }));
       },
       error: (error) => {
         this.erroCarregamento = 'Erro ao carregar restaurantes. Tente novamente mais tarde.';
@@ -35,32 +47,6 @@ export class RestauranteComponent implements OnInit {
       },
       complete: () => this.isLoading = false
     });
-
-    // Carregar pratos
-    this.restauranteService.getPratos().subscribe({
-      next: (data: Prato[]) => {
-        this.pratos = data;
-      },
-      error: (error) => {
-        this.erroCarregamento = 'Erro ao carregar pratos. Tente novamente mais tarde.';
-        console.error('Erro ao carregar pratos:', error);
-      }
-    });
   }
-
-}
-
-export interface Restaurante {
-  nome: String;
-  endereco: String;
-  horario_abertura: Date;
-  horario_fechamento: Date;
-  imagem_url: String;
-}
-
-export interface Prato {
-  id: number;
-  nome: string;
-  imagem_url: string;
-  avaliacao: number;
+    
 }

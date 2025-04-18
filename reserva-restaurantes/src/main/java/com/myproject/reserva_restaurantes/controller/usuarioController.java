@@ -1,82 +1,95 @@
 package com.myproject.reserva_restaurantes.controller;
 
-import com.myproject.reserva_restaurantes.Entity.Reserva;
 import com.myproject.reserva_restaurantes.Entity.Usuario;
-import com.myproject.reserva_restaurantes.dto.UsuarioDTO;
-import com.myproject.reserva_restaurantes.service.reservaService;
+import com.myproject.reserva_restaurantes.dto.UsuarioRequestDTO;
+import com.myproject.reserva_restaurantes.dto.UsuarioResponseDTO;
 import com.myproject.reserva_restaurantes.service.usuarioService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @RestController
 @RequestMapping("/api/usuario")
+@RequiredArgsConstructor
 public class usuarioController {
 
-    @Autowired
-    private usuarioService UsuarioService; // Usar camelCase para a variável
+    private final usuarioService UsuarioService;
+    private final PasswordEncoder passwordEncoder;
 
     @GetMapping
-    public ResponseEntity<?> getUsuarios() {
-        try {
-            List<Usuario> usuarios = UsuarioService.getUsuarios();
-            return ResponseEntity.ok().body(usuarios);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Erro ao buscar usuários: " + e.getMessage());
-        }
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<UsuarioResponseDTO>> listarTodos() {
+        return ResponseEntity.ok(UsuarioService.findAll()
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList()));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getUsuarioById(@PathVariable Long id) {
-        try {
-            Usuario usuario = UsuarioService.getByIdUsuarios(id);
-            if (usuario != null) {
-                return ResponseEntity.ok(usuario);
-            } else {
-                return ResponseEntity.notFound().build();
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Erro ao buscar usuário por ID: " + e.getMessage());
-        }
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<UsuarioResponseDTO> buscarPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(convertToDTO(UsuarioService.findById(id)));
     }
 
-    @PostMapping
-    public ResponseEntity<?> createUsuario(@RequestBody UsuarioDTO usuarioDTO) {
-        try {
-            Usuario usuario = new Usuario();
-            usuario.setEmail(usuarioDTO.getEmail());
-            usuario.setSenha(usuarioDTO.getSenha());
-            usuario.setRole(usuarioDTO.getRole());
+    @PostMapping("/register")
+    public ResponseEntity<UsuarioResponseDTO> criarUsuario(@Valid @RequestBody UsuarioRequestDTO usuarioDTO) {
+        Usuario usuario = convertToEntity(usuarioDTO);
+        usuario.setSenha(passwordEncoder.encode(usuarioDTO.getSenha()));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(convertToDTO(UsuarioService.save(usuario)));
+    }
 
-            // Salva o usuário no banco de dados
-            Usuario usuarioSalvo = UsuarioService.saveUsuarios(usuario); // Corrigido para usar o service
+    @PutMapping("/update/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<UsuarioResponseDTO> atualizarUsuario(
+            @PathVariable Long id,
+            @Valid @RequestBody UsuarioRequestDTO usuarioDTO) {
 
-            // Retorna o usuário salvo com status HTTP 201 (CREATED)
-            return ResponseEntity.status(HttpStatus.CREATED).body(usuarioSalvo);
-        } catch (Exception e) {
-            // Em caso de erro, retorna status HTTP 500 (INTERNAL_SERVER_ERROR) com a mensagem de erro
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Erro ao criar usuário: " + e.getMessage());
+        Usuario usuarioExistente = UsuarioService.findById(id);
+        usuarioExistente.setNome(usuarioDTO.getNome());
+        usuarioExistente.setCpf(usuarioDTO.getCpf());
+        usuarioExistente.setTelefone(usuarioDTO.getTelefone());
+        usuarioExistente.setEmail(usuarioDTO.getEmail());
+
+        if (usuarioDTO.getSenha() != null && !usuarioDTO.getSenha().trim().isEmpty()) {
+            usuarioExistente.setSenha(passwordEncoder.encode(usuarioDTO.getSenha().trim()));
         }
+        Usuario usuarioAtualizado = UsuarioService.save(usuarioExistente);
+        return ResponseEntity.ok(convertToDTO(usuarioAtualizado));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteUsuario(@PathVariable Long id) {
-        try {
-            UsuarioService.deleteUsuarios(id);
-            return ResponseEntity.ok("Usuário deletado com sucesso");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Erro ao deletar usuário: " + e.getMessage());
-        }
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deletarUsuario(@PathVariable Long id) {
+        UsuarioService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
+    private UsuarioResponseDTO convertToDTO(Usuario usuario) {
+        return UsuarioResponseDTO.builder()
+                .id(usuario.getId())
+                .nome(usuario.getNome())
+                .email(usuario.getEmail())
+                .role(usuario.getRole())
+                .build();
+    }
+
+    private Usuario convertToEntity(UsuarioRequestDTO dto) {
+        return Usuario.builder()
+                .nome(dto.getNome())
+                .cpf(dto.getCpf())
+                .telefone(dto.getTelefone())
+                .email(dto.getEmail())
+                .senha(passwordEncoder.encode(dto.getSenha().trim()))
+                .role(dto.getRole())
+                .build();
+    }
 }

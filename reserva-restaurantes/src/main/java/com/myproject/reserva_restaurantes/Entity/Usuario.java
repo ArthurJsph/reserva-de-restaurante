@@ -2,6 +2,7 @@ package com.myproject.reserva_restaurantes.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,8 +13,16 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+@Table(name = "usuario", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "email"),
+        @UniqueConstraint(columnNames = "cpf")
+})
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
-@Table(name = "usuario")
 public class Usuario implements UserDetails {
 
     @Id
@@ -21,7 +30,7 @@ public class Usuario implements UserDetails {
     @Column(name = "id_usuario")
     private Long id;
 
-    @Column(name = "nome", nullable = false)
+    @Column(nullable = false)
     private String nome;
 
     @Column(nullable = false, unique = true)
@@ -30,87 +39,24 @@ public class Usuario implements UserDetails {
     @Column(nullable = false)
     private String telefone;
 
-
     @Column(nullable = false, unique = true)
     private String email;
 
-
     @Column(nullable = false)
     private String senha;
-
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
 
-
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
-    private List<Reserva> reservas;
-
-    public Usuario() {
-        this.reservas = new ArrayList<>();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getCpf() {
-        return cpf;
-    }
-
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
-    }
-
-    public String getTelefone() {
-        return telefone;
-    }
-
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getSenha() {
-        return senha;
-    }
-
-    public void setSenha(String senha) {
-        this.senha = senha;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
+    @Builder.Default
+    private List<Reserva> reservas = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role.name()));
+        return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
     @Override
@@ -120,7 +66,7 @@ public class Usuario implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email; // Ou use 'nome' ou 'cpf', dependendo do identificador escolhido
+        return email;
     }
 
     @Override
@@ -141,6 +87,17 @@ public class Usuario implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+
+    public void addReserva(Reserva reserva) {
+        reservas.add(reserva);
+        reserva.setUsuario(this);
+    }
+
+    public void removeReserva(Reserva reserva) {
+        reservas.remove(reserva);
+        reserva.setUsuario(null);
     }
 
 }

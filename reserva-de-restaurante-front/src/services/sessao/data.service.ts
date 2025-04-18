@@ -10,23 +10,23 @@ import { environment } from '../../environments/environment';
 })
 
 export class DataService {
+  private readonly sessionKey = 'dados';
 
-  constructor(private http: HttpClient, private sessionService: SessionService) { }
+  constructor(
+    private http: HttpClient,
+    private sessionService: SessionService
+  ) {}
 
-  // Método para buscar dados do banco de dados
   getDados(): Observable<any> {
-    const dadosArmazenados = this.sessionService.get('dados');
+    const dados = this.sessionService.get(this.sessionKey);
 
-    // Se os dados já estão na sessão, retorna-os
-    if (dadosArmazenados) {
-      return of(dadosArmazenados); // Retorna um Observable com os dados armazenados
+    if (dados) {
+      return of(dados);
     }
 
-    // Se os dados não estão na sessão, faz a requisição ao banco de dados
-    return this.http.get(environment.apiUrl).pipe(
-      tap((dados) => {
-        // Armazena os dados na sessão
-        this.sessionService.set('dados', dados);
+    return this.http.get(`${environment.apiUrl}/usuario`).pipe(
+      tap((dadosRecebidos) => {
+        this.sessionService.set(this.sessionKey, dadosRecebidos);
       })
     );
   }

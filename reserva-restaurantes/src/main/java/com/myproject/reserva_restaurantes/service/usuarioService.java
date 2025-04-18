@@ -3,6 +3,8 @@ package com.myproject.reserva_restaurantes.service;
 import com.myproject.reserva_restaurantes.Entity.Usuario;
 import com.myproject.reserva_restaurantes.Entity.Role;
 import com.myproject.reserva_restaurantes.repository.usuarioRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,47 +23,66 @@ public class usuarioService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public List<Usuario> getUsuarios() {
+    private static final Logger logger = LoggerFactory.getLogger(usuarioService.class);
+
+    public List<Usuario> findAll() {
         try {
             return UsuarioRepository.findAll();
-        } catch (DataAccessException e) {
-            System.err.println("Erro ao acessar o banco de dados: " + e.getMessage());
-            return null;
+        } catch (Exception e) {
+            logger.error("Erro ao buscar todos os usuários", e);
+            throw new RuntimeException("Erro ao recuperar usuários do banco de dados", e);
         }
     }
 
-    public Usuario getByIdUsuarios(long id) { // Não deve ser static
+    public Usuario findById(Long id) {
         try {
             return UsuarioRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Usuário não encontrado com ID: " + id));
         } catch (Exception e) {
-            System.err.println("Erro ao acessar o banco de dados: " + e.getMessage());
-            return null;
+            logger.error("Erro ao buscar usuário por ID: {}", id, e);
+            throw new RuntimeException("Erro ao recuperar usuário do banco de dados", e);
         }
     }
 
     public Optional<Usuario> findByEmail(String email) {
-        return UsuarioRepository.findByEmail(email);
-    }
-
-    public Usuario saveUsuarios(Usuario usuario) {
         try {
-            // Codifica a senha antes de salvar
-            usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
-            return UsuarioRepository.save(usuario); // Usa o repositório injetado
-        } catch (DataAccessException e) {
-            // Log do erro e lança a exceção para ser tratada no controller
-            System.err.println("Erro ao acessar o banco de dados: " + e.getMessage());
-            throw new RuntimeException("Erro ao salvar usuário no banco de dados", e);
+            return UsuarioRepository.findByEmail(email);
+        } catch (Exception e) {
+            logger.error("Erro ao buscar usuário por email: {}", email, e);
+            throw new RuntimeException("Erro ao buscar usuário por email", e);
         }
     }
 
-    public void deleteUsuarios(long id) {
+    public Usuario registerNewUser(Usuario usuario) {
+        if (UsuarioRepository.findByEmail(usuario.getEmail()).isPresent()) {
+            throw new RuntimeException("Email já está em uso");
+        }
+        usuario.setSenha(passwordEncoder.encode(usuario.getSenha().trim()));
+        usuario.setRole(Role.ROLE_USER);
+
+        return save(usuario);
+    }
+
+    public Usuario save(Usuario usuario) {
         try {
+            return UsuarioRepository.save(usuario);
+        } catch (Exception e) {
+            logger.error("Erro ao salvar usuário: {}", usuario.getEmail(), e);
+            throw new RuntimeException("Erro ao persistir usuário no banco de dados", e);
+        }
+    }
+
+    public void delete(Long id) {
+        try {
+            if (!UsuarioRepository.existsById(id)) {
+                throw new RuntimeException("Usuário não encontrado com ID: " + id);
+            }
             UsuarioRepository.deleteById(id);
-        } catch (DataAccessException e) {
-            System.err.println("Erro ao acessar o banco de dados: " + e.getMessage());
+        } catch (Exception e) {
+            logger.error("Erro ao deletar usuário com ID: {}", id, e);
+            throw new RuntimeException("Erro ao deletar usuário do banco de dados", e);
         }
     }
+
 
 }

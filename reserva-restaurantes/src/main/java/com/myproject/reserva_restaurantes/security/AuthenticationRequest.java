@@ -1,7 +1,13 @@
 package com.myproject.reserva_restaurantes.security;
 
 
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
+@Data
 public class AuthenticationRequest {
     private String email;
     private String senha;

@@ -1,15 +1,12 @@
 package com.myproject.reserva_restaurantes.controller;
 
 
-import com.myproject.reserva_restaurantes.security.AuthenticationRequest;
+import com.myproject.reserva_restaurantes.dto.LoginRequest;
 import com.myproject.reserva_restaurantes.security.AuthenticationResponse;
-import com.myproject.reserva_restaurantes.security.JwtUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.myproject.reserva_restaurantes.service.AuthService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,33 +15,24 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/auth")
 public class authController {
+        private final AuthService authService;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    public authController(AuthService authService) {
+        this.authService = authService;
+    }
 
-    @Autowired
-    private JwtUtil jwtUtil;
-
-    @Autowired
-    private UserDetailsService userDetailsService;
-
-    @PostMapping
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest)
-            throws Exception {
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            authenticationRequest.getEmail(),
-                            authenticationRequest.getSenha()
-                    )
-            );
+            AuthenticationResponse response = authService.authenticate(request);
+            return ResponseEntity.ok(response);
+        } catch (BadCredentialsException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciais inválidas");
         } catch (Exception e) {
-            throw new Exception("Credenciais inválidas", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro interno: " + e.getMessage());
         }
-
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getEmail());
-        final String jwt = jwtUtil.generateToken(userDetails);
-
-        return ResponseEntity.ok(new AuthenticationResponse(jwt));
     }
 }
+
+
+
