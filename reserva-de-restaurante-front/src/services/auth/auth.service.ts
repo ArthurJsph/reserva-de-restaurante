@@ -33,7 +33,7 @@ export class AuthService {
   }
 
   login(credentials: { email: string; senha: string }): Observable<{ jwt: string; usuario: any }> {
-    return this.http.post<{ jwt: string; usuario: any }>(`${this.apiUrl}/login`, credentials).pipe(
+    return this.http.post<{ jwt: string; usuario: any }>(`http://localhost:8080/api/login`, credentials).pipe(
       tap((response) => {
         console.log('Resposta completa do servidor:', response);
   

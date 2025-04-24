@@ -1,5 +1,6 @@
 export const environment = {
     production: true,
-    apiUrl: 'https://reserva-de-restaurante-production.up.railway.app/api', // URL do back-end em produção
-    appName: 'Meu App (Prod)'
+    apiUrl: 'http://localhost:8080/api', // será substituído via Dockerfile
+    appName: 'Reserva de Restaurante'
   };
+  
