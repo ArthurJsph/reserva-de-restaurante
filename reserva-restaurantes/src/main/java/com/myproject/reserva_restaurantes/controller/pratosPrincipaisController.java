@@ -1,7 +1,7 @@
 package com.myproject.reserva_restaurantes.controller;
 
-import com.myproject.reserva_restaurantes.Entity.pratosPrincipais;
-import com.myproject.reserva_restaurantes.service.pratosPrincipaisService;
+import com.myproject.reserva_restaurantes.Entity.PratosPrincipais;
+import com.myproject.reserva_restaurantes.service.PratosPrincipaisService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +15,12 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/pratosPrincipais")
-public class pratosPrincipaisController {
+public class PratosPrincipaisController {
 
     @Autowired
-    private pratosPrincipaisService PratosPrincipaisService;
+    private PratosPrincipaisService pratosPrincipaisService;
 
-    private static final Logger logger = LoggerFactory.getLogger(pratosPrincipaisController.class);
+    private static final Logger logger = LoggerFactory.getLogger(PratosPrincipaisController.class);
 
     //Trata exceções de forma mais geral
     private ResponseEntity<?> handleException(Exception e, String errorMessage) {
@@ -31,7 +31,7 @@ public class pratosPrincipaisController {
     @GetMapping
     public ResponseEntity<?> getPratosPrincipais() {
         try {
-            List<pratosPrincipais> pratos = PratosPrincipaisService.getPratosPrincipais();
+            List<PratosPrincipais> pratos = pratosPrincipaisService.getPratosPrincipais();
             if (pratos.isEmpty()) {
                 return ResponseEntity.noContent().build(); // Retorna 204 se não houver pratos
             }
@@ -44,7 +44,7 @@ public class pratosPrincipaisController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getPratoPrincipalById(@PathVariable Long id) {
         try {
-            Optional<pratosPrincipais> prato = PratosPrincipaisService.getByIdPratosPrincipais(id);
+            Optional<PratosPrincipais> prato = pratosPrincipaisService.getByIdPratosPrincipais(id);
             if (prato == null) {
                 return ResponseEntity.notFound().build();
             }
@@ -55,12 +55,12 @@ public class pratosPrincipaisController {
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody pratosPrincipais pratosPrincipais) {
+    public ResponseEntity<?> create(@RequestBody PratosPrincipais pratosPrincipais) {
         try {
             if (pratosPrincipais == null) {
                 return ResponseEntity.badRequest().body("O corpo da requisição não pode ser nulo");
             }
-            pratosPrincipais novoPrato = PratosPrincipaisService.savePratosPrincipais(pratosPrincipais);
+            PratosPrincipais novoPrato = pratosPrincipaisService.savePratosPrincipais(pratosPrincipais);
             return ResponseEntity.status(HttpStatus.CREATED).body(novoPrato);
         } catch (Exception e) {
             return handleException(e, "Erro ao criar prato principal");
@@ -70,11 +70,11 @@ public class pratosPrincipaisController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         try {
-            Optional<pratosPrincipais> prato = PratosPrincipaisService.getByIdPratosPrincipais(id);
+            Optional<PratosPrincipais> prato = pratosPrincipaisService.getByIdPratosPrincipais(id);
             if (prato == null) {
                 return ResponseEntity.notFound().build();
             }
-            PratosPrincipaisService.deletePratosPrincipais(id);
+            pratosPrincipaisService.deletePratosPrincipais(id);
             return ResponseEntity.ok("Prato principal deletado com sucesso");
         } catch (Exception e) {
             return handleException(e, "Erro ao deletar prato principal");

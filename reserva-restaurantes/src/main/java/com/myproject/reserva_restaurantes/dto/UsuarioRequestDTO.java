@@ -4,12 +4,8 @@ import com.myproject.reserva_restaurantes.Entity.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.*;
 
 
-@Getter
-@Setter
-@Builder
 public class UsuarioRequestDTO {
     @NotBlank
     private String nome;

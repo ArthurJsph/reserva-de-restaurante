@@ -1,7 +1,7 @@
 package com.myproject.reserva_restaurantes.service;
 
 import com.myproject.reserva_restaurantes.Entity.Restaurante;
-import com.myproject.reserva_restaurantes.repository.restauranteRepository;
+import com.myproject.reserva_restaurantes.repository.RestauranteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -9,14 +9,14 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class restauranteService {
+public class RestauranteService {
 
     @Autowired
-    private restauranteRepository RestauranteRepository; // Não deve ser static
+    private RestauranteRepository restauranteRepository;
 
     public List<Restaurante> getRestaurantes() {
         try {
-            return RestauranteRepository.findAll();
+            return restauranteRepository.findAll();
         } catch (DataAccessException e) {
             System.err.println("Erro ao acessar o banco de dados: " + e.getMessage());
             return null;
@@ -25,7 +25,7 @@ public class restauranteService {
 
     public Restaurante getByIdRestaurantes(long id) {
         try {
-            return RestauranteRepository.findById(id)
+            return restauranteRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Restaurante não encontrado com ID: " + id));
         } catch (Exception e) {
             System.err.println("Erro ao acessar o banco de dados: " + e.getMessage());
@@ -35,7 +35,7 @@ public class restauranteService {
 
     public Restaurante saveRestaurantes(Restaurante restaurante) {
         try {
-            return RestauranteRepository.save(restaurante);
+            return restauranteRepository.save(restaurante);
         } catch (DataAccessException e) {
             System.err.println("Erro ao acessar o banco de dados: " + e.getMessage());
             return null;
@@ -44,7 +44,7 @@ public class restauranteService {
 
     public void deleteRestaurantes(long id) {
         try {
-            RestauranteRepository.deleteById(id);
+            restauranteRepository.deleteById(id);
         } catch (DataAccessException e) {
             System.err.println("Erro ao acessar o banco de dados: " + e.getMessage());
         }

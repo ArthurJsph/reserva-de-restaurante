@@ -8,7 +8,7 @@
 		<version>3.4.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>.com.myproject</groupId>
+	<groupId>com.myproject</groupId>
 	<artifactId>reserva-restaurantes</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>reserva-restaurantes</name>
@@ -89,12 +89,6 @@
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
 			<version>6.2.0.Final</version>
-		</dependency>
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>1.18.36</version>
-			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 

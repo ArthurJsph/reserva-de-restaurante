@@ -1,9 +1,7 @@
 package com.myproject.reserva_restaurantes.service;
 
 import com.myproject.reserva_restaurantes.Entity.Usuario;
-import com.myproject.reserva_restaurantes.repository.usuarioRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.myproject.reserva_restaurantes.repository.UsuarioRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,18 +9,19 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 
-@RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
-    private final usuarioRepository UsuarioRepository;
+    private final UsuarioRepository usuarioRepository;
+
+    public CustomUserDetailsService(UsuarioRepository usuarioRepository) {
+        this.usuarioRepository = usuarioRepository;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return UsuarioRepository.findByEmail(email)
+        return usuarioRepository.findByEmail(email)
                 .map(this::buildUserDetails)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + email));
     }

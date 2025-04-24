@@ -1,9 +1,7 @@
 package com.myproject.reserva_restaurantes.controller;
 
-import com.myproject.reserva_restaurantes.Entity.Reserva;
 import com.myproject.reserva_restaurantes.Entity.Restaurante;
-import com.myproject.reserva_restaurantes.Entity.Usuario;
-import com.myproject.reserva_restaurantes.service.restauranteService;
+import com.myproject.reserva_restaurantes.service.RestauranteService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,18 +9,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 
 @RestController
 @RequestMapping("/api/restaurante")
-public class restauranteController {
+public class RestauranteController {
 
     @Autowired
-    private restauranteService RestauranteService;
+    private RestauranteService restauranteService;
 
-    private static final Logger logger = LoggerFactory.getLogger(restauranteController.class);
+    private static final Logger logger = LoggerFactory.getLogger(RestauranteController.class);
 
     // Método auxiliar para tratar exceções
     private ResponseEntity<?> handleException(Exception e, String errorMessage) {
@@ -33,7 +30,7 @@ public class restauranteController {
     @GetMapping
     public ResponseEntity<?> getRestaurantes() {
         try {
-            List<Restaurante> restaurantes = RestauranteService.getRestaurantes();
+            List<Restaurante> restaurantes = restauranteService.getRestaurantes();
             if (restaurantes.isEmpty()) {
                 return ResponseEntity.noContent().build(); // Retorna 204 se não houver restaurantes
             }
@@ -46,7 +43,7 @@ public class restauranteController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getRestauranteById(@PathVariable Long id) {
         try {
-            Restaurante restaurante = RestauranteService.getByIdRestaurantes(id);
+            Restaurante restaurante = restauranteService.getByIdRestaurantes(id);
             if (restaurante == null) {
                 return ResponseEntity.notFound().build();
             }
@@ -63,7 +60,7 @@ public class restauranteController {
             if (restaurante == null) {
                 return ResponseEntity.badRequest().body("O corpo da requisição não pode ser nulo");
             }
-            Restaurante novoRestaurante = RestauranteService.saveRestaurantes(restaurante);
+            Restaurante novoRestaurante = restauranteService.saveRestaurantes(restaurante);
             return ResponseEntity.status(HttpStatus.CREATED).body(novoRestaurante);
         } catch (Exception e) {
             return handleException(e, "Erro ao criar restaurante");
@@ -74,11 +71,11 @@ public class restauranteController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteRestaurante(@PathVariable Long id) {
         try {
-            Restaurante restaurante = RestauranteService.getByIdRestaurantes(id);
+            Restaurante restaurante = restauranteService.getByIdRestaurantes(id);
             if (restaurante == null) {
                 return ResponseEntity.notFound().build();
             }
-            RestauranteService.deleteRestaurantes(id);
+            restauranteService.deleteRestaurantes(id);
             return ResponseEntity.ok("Restaurante deletado com sucesso");
         } catch (Exception e) {
             return handleException(e, "Erro ao deletar restaurante");
@@ -92,7 +89,7 @@ public class restauranteController {
             if (restauranteAtualizado == null) {
                 return ResponseEntity.badRequest().body("O corpo da requisição não pode ser nulo");
             }
-            Restaurante restauranteExistente = RestauranteService.getByIdRestaurantes(id);
+            Restaurante restauranteExistente = restauranteService.getByIdRestaurantes(id);
             if (restauranteExistente == null) {
                 return ResponseEntity.notFound().build();
             }
@@ -104,7 +101,7 @@ public class restauranteController {
             restauranteExistente.setHorarioFechamento(restauranteAtualizado.getHorarioFechamento());
             restauranteExistente.setImagem_url(restauranteAtualizado.getImagem_url());
 
-            Restaurante restauranteAtualizadoNoBanco = RestauranteService.saveRestaurantes(restauranteExistente);
+            Restaurante restauranteAtualizadoNoBanco = restauranteService.saveRestaurantes(restauranteExistente);
             return ResponseEntity.ok(restauranteAtualizadoNoBanco);
         } catch (Exception e) {
             return handleException(e, "Erro ao atualizar restaurante");

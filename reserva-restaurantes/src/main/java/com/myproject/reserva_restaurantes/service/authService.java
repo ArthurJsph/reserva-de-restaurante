@@ -5,40 +5,42 @@ import com.myproject.reserva_restaurantes.Entity.Role;
 import com.myproject.reserva_restaurantes.dto.LoginRequest;
 import com.myproject.reserva_restaurantes.dto.RegisterRequest;
 import com.myproject.reserva_restaurantes.dto.UsuarioResponseDTO;
-import com.myproject.reserva_restaurantes.repository.usuarioRepository;
+import com.myproject.reserva_restaurantes.repository.UsuarioRepository;
 import com.myproject.reserva_restaurantes.security.AuthenticationResponse;
 import com.myproject.reserva_restaurantes.security.JwtUtil;
-import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
-
 @Service
-@RequiredArgsConstructor
 public class AuthService {
-    private final usuarioRepository UsuarioRepository;
+    private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
+    public AuthService(UsuarioRepository usuarioRepository,
+                       PasswordEncoder passwordEncoder,
+                       JwtUtil jwtUtil) {
+        this.usuarioRepository = usuarioRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtUtil = jwtUtil;
+    }
+
     private UsuarioResponseDTO convertToDTO(Usuario usuario) {
-        return UsuarioResponseDTO.builder()
-                .id(usuario.getId())
-                .nome(usuario.getNome())
-                .email(usuario.getEmail())
-                .cpf(usuario.getCpf())
-                .telefone(usuario.getTelefone())
-                .role(Role.valueOf(usuario.getRole().name()))
-                .reservas(usuario.getReservas())
-                .build();
+        UsuarioResponseDTO dto = new UsuarioResponseDTO();
+        dto.setId(usuario.getId());
+        dto.setNome(usuario.getNome());
+        dto.setEmail(usuario.getEmail());
+        dto.setCpf(usuario.getCpf());
+        dto.setTelefone(usuario.getTelefone());
+        dto.setRole(Role.valueOf(usuario.getRole().name()));
+        dto.setReservas(usuario.getReservas());
+        return dto;
     }
 
     public AuthenticationResponse authenticate(LoginRequest request) {
-        Usuario usuario = UsuarioRepository.findByEmail(request.getEmail())
+        Usuario usuario = usuarioRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com o email: " + request.getEmail()));
 
         if (!passwordEncoder.matches(request.getSenha(), usuario.getSenha())) {
@@ -51,7 +53,7 @@ public class AuthService {
     }
 
     public Usuario register(RegisterRequest request) {
-        if (UsuarioRepository.existsByEmail(request.getEmail())) {
+        if (usuarioRepository.existsByEmail(request.getEmail())) {
             throw new IllegalArgumentException("Email já está em uso");
         }
 
@@ -63,7 +65,6 @@ public class AuthService {
         novoUsuario.setSenha(passwordEncoder.encode(request.getSenha().trim()));
         novoUsuario.setRole(Role.ROLE_USER);
 
-        return UsuarioRepository.save(novoUsuario);
+        return usuarioRepository.save(novoUsuario);
     }
-
 }
