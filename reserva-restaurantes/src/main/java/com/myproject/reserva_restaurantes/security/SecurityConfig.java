@@ -102,7 +102,10 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(List.of("http://localhost:4200")); // Em produção, especifique os domínios
+        configuration.setAllowedOriginPatterns(
+                List.of("http://localhost:4200", "https://reserva-de-restaurante.vercel.app")
+        );
+
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setExposedHeaders(List.of("Authorization", "Content-Disposition")); // Headers expostos
