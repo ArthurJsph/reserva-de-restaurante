@@ -35,8 +35,6 @@ export class LoginComponent {
   
     this.authService.login({ email: this.email, senha: this.senha }).subscribe({
       next: (response) => {
-        console.log('Login bem-sucedido:', response);
-        
         // Redireciona diretamente (os dados JÁ foram salvos no SessionService)
         this.router.navigate(['/perfil']);
         this.isLoading = false;

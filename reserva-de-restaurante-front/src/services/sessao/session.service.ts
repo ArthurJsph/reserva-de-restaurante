@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'  // ← Isso é crucial!
+  providedIn: 'root'  
 })
 export class SessionService {
   private sessionCache: { [key: string]: any } = {};
 
   set(key: string, value: any): void {
-    console.log(`Salvando no sessionStorage -> Chave: ${key}, Valor:`, value);
     this.sessionCache[key] = value;
     sessionStorage.setItem(key, JSON.stringify(value));
   }

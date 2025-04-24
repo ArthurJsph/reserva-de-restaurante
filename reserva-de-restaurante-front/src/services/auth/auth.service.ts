@@ -2,9 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError, BehaviorSubject } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
-import { environment } from '../../environments/environment';
-import { SessionService } from '../sessao/session.service'; // ajuste o caminho conforme necessário
-
+import { environment } from '../../environments/environment.prod';
+import { SessionService } from '../sessao/session.service'; 
 interface User {
   email: string;
   token?: string;
@@ -33,9 +32,8 @@ export class AuthService {
   }
 
   login(credentials: { email: string; senha: string }): Observable<{ jwt: string; usuario: any }> {
-    return this.http.post<{ jwt: string; usuario: any }>(`http://localhost:8080/api/login`, credentials).pipe(
+    return this.http.post<{ jwt: string; usuario: any }>(`${this.apiUrl}/login`, credentials).pipe(
       tap((response) => {
-        console.log('Resposta completa do servidor:', response);
   
         if (!response.jwt) {
           console.error('A resposta do servidor não contém o campo "jwt".');
@@ -45,17 +43,9 @@ export class AuthService {
         if (!response.usuario) {
           console.error('A resposta do servidor não contém o campo "usuario".');
         }
-  
-        console.log('Salvando token no sessionStorage...');
         this.sessionService.set('token', response.jwt);
-        console.log('Token salvo:', this.sessionService.get('token'));
-  
-        console.log('Salvando usuário no sessionStorage...');
         this.sessionService.set('usuario', response.usuario);
-        console.log('Usuário salvo:', this.sessionService.get('usuario'));
-  
         this.loggedIn.next(true);
-        console.log('Estado de autenticação atualizado para true.');
       }),
       catchError(this.handleError)
     );
@@ -64,7 +54,7 @@ export class AuthService {
 
   logout(): void {
     this.sessionService.clear();
-    this.loggedIn.next(false); // Atualiza o estado
+    this.loggedIn.next(false);
   }
 
   private isLoggedInCache: boolean | null = null;
@@ -73,13 +63,12 @@ export class AuthService {
     if (this.isLoggedInCache === null) {
       const token = this.sessionService.get('token');
       this.isLoggedInCache = !!token;
-      console.log('Verificando se o usuário está logado. Token encontrado:', token);
     }
     return this.isLoggedInCache;
   }
 
   invalidateCache(): void {
-    this.isLoggedInCache = null; // Limpa o cache quando necessário (ex.: logout)
+    this.isLoggedInCache = null; 
   }
 
   getCurrentUser(): any {
