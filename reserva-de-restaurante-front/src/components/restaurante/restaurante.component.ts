@@ -18,28 +18,33 @@ interface Restaurante {
   templateUrl: './restaurante.component.html',
   styleUrls: ['./restaurante.component.css'] // Corrigido aqui
 })
-export class RestauranteComponent {
- restaurantes: Restaurante[] = [];
-  erroCarregamento : String = ''; // Flag para controle de erro
+export class RestauranteComponent implements OnInit {
+  restaurantes: Restaurante[] = [];
+  erroCarregamento: string = ''; // Flag para controle de erro
   isLoading = true; // Flag para estado de carregamento
 
   constructor(private restauranteService: RestauranteService) {}
 
-  gOnInit(): void {
+  ngOnInit(): void {
     this.carregarDados();
   }
 
   carregarDados(): void {
     this.isLoading = true;
-    this.erroCarregamento = '';
+    this.erroCarregamento = ''; // Resetando a mensagem de erro
 
     this.restauranteService.getRestaurantes().subscribe({
-      next: (data: Restaurante[]) => {
-        // Adiciona fallback para imagem_url
-        this.restaurantes = data.map(restaurante => ({
-          ...restaurante,
-          imagem_url: restaurante.imagem_url || 'assets/images/default-restaurant.jpg'
-        }));
+      next: (data: any) => {
+        // Verificando se a resposta é um array e tratando dados nulos
+        if (Array.isArray(data)) {
+          this.restaurantes = data.map(restaurante => ({
+            ...restaurante,
+            imagem_url: restaurante.imagem_url || 'assets/images/default-restaurant.jpg' // Fallback para imagem
+          }));
+        } else {
+          // Se a resposta não for um array, iniciamos com um array vazio
+          this.restaurantes = [];
+        }
       },
       error: (error) => {
         this.erroCarregamento = 'Erro ao carregar restaurantes. Tente novamente mais tarde.';
@@ -48,5 +53,4 @@ export class RestauranteComponent {
       complete: () => this.isLoading = false
     });
   }
-    
 }

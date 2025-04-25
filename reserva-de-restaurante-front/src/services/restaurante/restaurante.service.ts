@@ -36,20 +36,11 @@ deleteRestaurante(id: number): Observable<any> {
   return this.http.delete(`${environment.apiUrl}/restaurante/${id}`).pipe(catchError(this.handleError));
 }
 
-// Buscar todos os pratos
-getPratos(): Observable<any> {
-  return this.http.get(`${environment.apiUrl}/pratosPrincipais`).pipe(catchError(this.handleError));
-}
 
-// Buscar prato por ID
-getPratoById(id: number): Observable<any> {
-  return this.http.get(`${environment.apiUrl}/pratosPrincipais/${id}`).pipe(catchError(this.handleError));
-}
 
-// Deletar um prato
-deletePrato(id: number): Observable<any> {
-  return this.http.delete(`${environment.apiUrl}/pratosPrincipais/${id}`).pipe(catchError(this.handleError));
-}
+
+
+
 
 // Método para tratar erros
 private handleError(error: HttpErrorResponse) {

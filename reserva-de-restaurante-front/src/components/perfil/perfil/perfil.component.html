@@ -18,40 +18,40 @@
             <div class="mb-4">
               <label class="block text-gray-700 text-sm font-bold mb-2">Nome Completo</label>
               <input type="text" [(ngModel)]="usuario.nome" name="nome"
-                     class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-500">
+                     class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                     placeholder="Digite seu nome completo">
             </div>
 
             <!-- Email -->
             <div class="mb-4">
               <label class="block text-gray-700 text-sm font-bold mb-2">Email</label>
               <input type="email" [(ngModel)]="usuario.email" name="email"
-                     class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-500">
+                     class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                     placeholder="Digite seu email">
             </div>
 
             <!-- Telefone -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700">Telefone</label>
+            <div class="mb-4">
+              <label class="block text-gray-700 text-sm font-bold mb-2">Telefone</label>
               <input 
                 type="text" 
                 [(ngModel)]="usuario.telefone" 
                 name="telefone"
                 mask="(00) 00000-0000" 
-                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-red-500 focus:ring-red-500"
-                placeholder="(__) _____-____"
-              />
+                class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                placeholder="(__) _____-____">
             </div>
 
             <!-- CPF -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700">CPF</label>
+            <div class="mb-4">
+              <label class="block text-gray-700 text-sm font-bold mb-2">CPF</label>
               <input 
                 type="text" 
                 [(ngModel)]="usuario.cpf" 
                 name="cpf"
                 mask="000.000.000-00" 
-                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-red-500 focus:ring-red-500"
-                placeholder="___.___.___-__"
-              />
+                class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                placeholder="___.___.___-__">
             </div>
           </div>
 
@@ -110,15 +110,6 @@
             class="px-4 py-2 text-sm bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition"
           >
             Sair
-          </button>
-        </div>
-        <div class="flex justify-between items-center pt-4 border-t">
-          <div>
-            <h3 class="font-medium text-gray-800">Excluir Conta</h3>
-            <p class="text-sm text-gray-600">Esta ação não pode ser desfeita</p>
-          </div>
-          <button class="px-4 py-2 text-sm bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition">
-            Excluir Conta
           </button>
         </div>
       </div>

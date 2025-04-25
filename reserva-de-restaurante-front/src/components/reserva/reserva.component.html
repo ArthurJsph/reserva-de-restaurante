@@ -18,7 +18,7 @@
       </div>
 
       <div>
-        <label class="block text-gray-700 font-medium mb-2">ID do Restaurante</label>
+        <label class="block text-gray-700 font-medium mb-2">Número do Restaurante</label>
         <input [(ngModel)]="reserva.id_restaurante" name="id_restaurante" required type="number"
           class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-amber-500" />
       </div>
@@ -44,19 +44,19 @@
       <div>
         <label class="block text-gray-700 font-medium mb-2">Nome do Responsável</label>
         <input [(ngModel)]="reserva.nome_responsavel" name="nome_responsavel" required type="text"
-          class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-amber-500" />
+          class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-amber-500" disabled />
       </div>
 
       <div>
         <label class="block text-gray-700 font-medium mb-2">CPF do Responsável</label>
         <input [(ngModel)]="reserva.cpf_responsavel" name="cpf_responsavel" required type="text"
-          class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-amber-500" />
+          class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-amber-500" disabled />
       </div>
 
       <div>
         <label class="block text-gray-700 font-medium mb-2">Telefone do Responsável</label>
         <input [(ngModel)]="reserva.telefone_responsavel" name="telefone_responsavel" required type="tel"
-          class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-amber-500" />
+          class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-amber-500" disabled />
       </div>
     </div>
 

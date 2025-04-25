@@ -1,63 +1,82 @@
 import { Component } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { AuthService } from '../../services/auth/auth.service';
 import { ReservaService } from '../../services/reserva/reserva.service';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { catchError } from 'rxjs/operators';
-import { Observable, throwError } from 'rxjs';
+
 @Component({
   selector: 'app-reserva',
   standalone: true,
-  imports: [FormsModule, HttpClientModule, CommonModule],
+  imports: [FormsModule ],
   templateUrl: './reserva.component.html',
+  styleUrls: ['./reserva.component.css']
 })
 export class ReservaComponent {
-  
-  submitted = false;
-
+  // Modelo de reserva
   reserva = {
     nome_restaurante: '',
+    id_restaurante: null,
     data_reserva: '',
     hora_reserva: '',
     numero_pessoas: 1,
     nome_responsavel: '',
     cpf_responsavel: '',
-    telefone_responsavel: '',
-    id_restaurante: 0
+    telefone_responsavel: ''
   };
 
-  constructor(private reservaService: ReservaService) {}
+  submitted = false; // Controla a exibição da mensagem de sucesso
 
-  onSubmit(): void {
-    this.submitted = true;
+  constructor(
+    private authService: AuthService,
+    private reservaService: ReservaService
+  ) {}
 
+  ngOnInit() {
+    this.preencherDadosUsuarioLogado();
+  }
+
+  /**
+   * Preenche os campos do responsável com os dados do usuário logado.
+   */
+  private preencherDadosUsuarioLogado() {
+    const usuarioLogado = this.authService.getCurrentUser();
+
+    if (usuarioLogado) {
+      this.reserva.nome_responsavel = usuarioLogado.nome || '';
+      this.reserva.cpf_responsavel = usuarioLogado.cpf || '';
+      this.reserva.telefone_responsavel = usuarioLogado.telefone || '';
+    }
+  }
+
+  /**
+   * Envia os dados da reserva ao backend.
+   */
+  onSubmit() {
     this.reservaService.postReserva(this.reserva).subscribe({
-      next: () => {
-        alert('Reserva criada com sucesso!');
-        this.limparFormulario();
-        
-        // Reset submitted status after 3 seconds
-        setTimeout(() => {
-          this.submitted = false;
-        }, 3000);
+      next: (response) => {
+        console.log('Reserva enviada com sucesso:', response);
+        this.submitted = true; // Exibe a mensagem de sucesso
+        this.limparFormulario(); // Limpa o formulário após o envio
       },
       error: (error) => {
-        console.error('Erro ao criar reserva:', error);
-        this.submitted = false;
+        console.error('Erro ao enviar a reserva:', error);
+        alert(error.message || 'Erro ao confirmar a reserva. Por favor, tente novamente.');
       }
     });
   }
 
-  limparFormulario(): void {
+  /**
+   * Limpa o formulário após o envio bem-sucedido.
+   */
+  private limparFormulario() {
     this.reserva = {
       nome_restaurante: '',
+      id_restaurante: null,
       data_reserva: '',
       hora_reserva: '',
       numero_pessoas: 1,
-      nome_responsavel: '',
-      cpf_responsavel: '',
-      telefone_responsavel: '',
-      id_restaurante: 0
+      nome_responsavel: this.reserva.nome_responsavel, // Mantém os dados do responsável
+      cpf_responsavel: this.reserva.cpf_responsavel,   // Mantém os dados do responsável
+      telefone_responsavel: this.reserva.telefone_responsavel // Mantém os dados do responsável
     };
   }
 }
