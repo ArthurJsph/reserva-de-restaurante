@@ -41,6 +41,14 @@ CREATE TABLE reserva (
     id_usuario INT REFERENCES usuario(id_usuario)
 );
 
+-- Valores ficticios para a tabela de restaurantes
+INSERT INTO restaurante (id_restaurante, nome, endereco, capacidade, horario_abertura, horario_fechamento, imagem_url) VALUES
+(1, 'Bistro da Esquina', 'Rua das Flores, 123', 50, '11:00', '22:00', 'bistro_da_esquina.jpg'),
+(2, 'Cantina Italiana', 'Av. Itália, 456', 70, '12:00', '23:00', 'cantina_italiana.jpg'),
+(3, 'Churrascaria Gaúcha', 'Rua do Churrasco, 789', 120, '18:00', '00:00', 'churrascaria_gaucha.jpg'),
+(4, 'Sushi & Sashimi', 'Av. do Sushi, 321', 40, '11:30', '22:30', 'sushi_sashimi.jpg'),
+(5, 'Café Central', 'Praça Central, 10', 30, '07:00', '20:00', 'cafe_central.jpg');
+
 -- FUNÇÕES E TRIGGERS
 
 -- Verificação de horário de funcionamento
