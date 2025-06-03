@@ -2,14 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
-import { environment } from '../../environments/environment.prod';
+import { environment } from '../../environments/environment';
 import { AuthService } from '../auth/auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-  private readonly apiUrl = `${environment.apiUrl}/usuario`; // Ajuste se necessário
+  private readonly apiUrl = `${environment.apiUrl}/usuario/listar`; // Ajuste se necessário
   private userCache: any = null;
 
   constructor(
@@ -17,7 +17,6 @@ export class UserService {
     private authService: AuthService
   ) {}
 
-  /** Retorna o usuário da sessão ou do cache local */
   getUser(): any {
     if (this.userCache) {
       return this.userCache;
@@ -26,8 +25,6 @@ export class UserService {
     this.userCache = user;
     return user;
   }
-
-  /** Carrega os dados do usuário do backend (caso precise atualizar ou forçar uma nova consulta) */
   fetchUserFromBackend(): Observable<any> {
     const token = this.authService.getToken();
     if (!token) return of(null);
@@ -43,9 +40,8 @@ export class UserService {
     );
   }
 
-  /** Atualiza os dados do usuário */
   updateUserProfile(data: any): Observable<any> {
-    const userId = this.authService.getCurrentUser()?.id; // Obtém o ID do usuário autenticado
+    const userId = this.authService.getCurrentUser()?.id; 
     if (!userId) {
       console.error('ID do usuário não encontrado.');
       return of(null);
@@ -53,7 +49,7 @@ export class UserService {
 
     return this.http.put<any>(`${this.apiUrl}/register${userId}`, data).pipe(
       tap((updatedUser) => {
-        this.userCache = { ...this.userCache, ...updatedUser }; // Atualiza o cache com os novos dados
+        this.userCache = { ...this.userCache, ...updatedUser }; 
       }),
       catchError((error) => {
         console.error('Erro ao atualizar perfil:', error);
@@ -61,8 +57,7 @@ export class UserService {
       })
     );
   }
-
-  /** Limpa o cache e os dados da sessão */
+  
   clearUserData() {
     this.userCache = null;
     this.authService.logout();

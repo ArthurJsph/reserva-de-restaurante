@@ -1,6 +1,6 @@
 export const environment = {
     production: true,
-    apiUrl: 'https://backend-reserva-gourmet.onrender.com/api', // será substituído via Dockerfile
+    apiUrl: 'http://localhost:8080/api',
     appName: 'Reserva de Restaurante'
   };
   

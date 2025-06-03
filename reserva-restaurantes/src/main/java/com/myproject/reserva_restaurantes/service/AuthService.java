@@ -1,14 +1,15 @@
 package com.myproject.reserva_restaurantes.service;
 
-import com.myproject.reserva_restaurantes.Entity.Usuario;
-import com.myproject.reserva_restaurantes.Entity.Role;
-import com.myproject.reserva_restaurantes.dto.LoginRequest;
-import com.myproject.reserva_restaurantes.dto.RegisterRequest;
-import com.myproject.reserva_restaurantes.dto.UsuarioResponseDTO;
+import com.myproject.reserva_restaurantes.dto.request.UsuarioRequest;
+import com.myproject.reserva_restaurantes.model.Usuario;
+import com.myproject.reserva_restaurantes.model.Role;
+import com.myproject.reserva_restaurantes.dto.request.LoginRequest;
+import com.myproject.reserva_restaurantes.dto.response.UsuarioResponse;
 import com.myproject.reserva_restaurantes.repository.UsuarioRepository;
 import com.myproject.reserva_restaurantes.security.AuthenticationResponse;
 import com.myproject.reserva_restaurantes.security.JwtUtil;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,8 +28,8 @@ public class AuthService {
         this.jwtUtil = jwtUtil;
     }
 
-    private UsuarioResponseDTO convertToDTO(Usuario usuario) {
-        UsuarioResponseDTO dto = new UsuarioResponseDTO();
+    private UsuarioResponse convertToDTO(Usuario usuario) {
+        UsuarioResponse dto = new UsuarioResponse();
         dto.setId(usuario.getId());
         dto.setNome(usuario.getNome());
         dto.setEmail(usuario.getEmail());
@@ -47,12 +48,12 @@ public class AuthService {
             throw new BadCredentialsException("Credenciais inválidas");
         }
 
-        String token = jwtUtil.generateToken(usuario);
-        UsuarioResponseDTO usuarioDTO = convertToDTO(usuario);
+        String token = jwtUtil.generateToken((UserDetails) usuario);
+        UsuarioResponse usuarioDTO = convertToDTO(usuario);
         return new AuthenticationResponse(token, usuarioDTO);
     }
 
-    public Usuario register(RegisterRequest request) {
+    public Usuario register(UsuarioRequest request) {
         if (usuarioRepository.existsByEmail(request.getEmail())) {
             throw new IllegalArgumentException("Email já está em uso");
         }
@@ -63,7 +64,8 @@ public class AuthService {
         novoUsuario.setTelefone(request.getTelefone());
         novoUsuario.setEmail(request.getEmail());
         novoUsuario.setSenha(passwordEncoder.encode(request.getSenha().trim()));
-        novoUsuario.setRole(Role.ROLE_USER);
+        novoUsuario.setRole(request.getRole());
+        ;
 
         return usuarioRepository.save(novoUsuario);
     }

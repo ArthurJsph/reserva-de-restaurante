@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError, BehaviorSubject } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
-import { environment } from '../../environments/environment.prod';
+import { environment } from '../../environments/environment';
 import { SessionService } from '../sessao/session.service'; 
 interface User {
   email: string;
@@ -60,20 +60,13 @@ export class AuthService {
   private isLoggedInCache: boolean | null = null;
 
   isLoggedIn(): boolean {
-    // Verifica se o cache está vazio
     if (this.isLoggedInCache === null) {
-      // Obtém o token da sessão
       const token = this.sessionService.get('token');
-      
-      // Se o token existir e não for vazio, define o cache como true, caso contrário, false
       this.isLoggedInCache = token ? true : false;
     }
-  
-    // Retorna o valor do cache
     return this.isLoggedInCache;
   }
   
-
   invalidateCache(): void {
     this.isLoggedInCache = null; 
   }

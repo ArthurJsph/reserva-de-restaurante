@@ -1,6 +1,6 @@
 package com.myproject.reserva_restaurantes.repository;
 
-import com.myproject.reserva_restaurantes.Entity.Restaurante;
+import com.myproject.reserva_restaurantes.model.Restaurante;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,6 +1,6 @@
 package com.myproject.reserva_restaurantes.service;
 
-import com.myproject.reserva_restaurantes.Entity.Usuario;
+import com.myproject.reserva_restaurantes.model.Usuario;
 import com.myproject.reserva_restaurantes.repository.UsuarioRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;

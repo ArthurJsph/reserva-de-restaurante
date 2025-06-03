@@ -1,6 +1,6 @@
 export const environment = {
     production: false,
-    apiUrl: 'http://localhost:8080/api', // será substituído via Dockerfile
+    apiUrl: 'http://localhost:8080/api', 
     appName: 'Reserva de Restaurante'
   };
   

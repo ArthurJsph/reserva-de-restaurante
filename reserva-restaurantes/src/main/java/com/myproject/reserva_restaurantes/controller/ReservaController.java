@@ -1,7 +1,9 @@
 package com.myproject.reserva_restaurantes.controller;
 
-import com.myproject.reserva_restaurantes.Entity.Reserva;
+import com.myproject.reserva_restaurantes.dto.request.ReservaRequest;
+import com.myproject.reserva_restaurantes.model.Reserva;
 import com.myproject.reserva_restaurantes.service.ReservaService;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,98 +24,56 @@ public class ReservaController {
 
     private static final Logger logger = LoggerFactory.getLogger(ReservaController.class);
 
-    // Método auxiliar para tratar exceções
     private ResponseEntity<?> handleException(Exception e, String errorMessage) {
         logger.error(errorMessage, e);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage + ": " + e.getMessage());
     }
 
-    @GetMapping
-    public ResponseEntity<?> getReservas() {
+    @GetMapping("/listar")
+    public ResponseEntity<?> obterTudo() {
         try {
-            List<Reserva> reservas = reservaService.getReservas();
-            if (reservas.isEmpty()) {
-                return ResponseEntity.noContent().build(); // Retorna 204 se não houver reservas
-            }
-            return ResponseEntity.ok(reservas);
+            return ResponseEntity.ok(reservaService.findAll());
         } catch (Exception e) {
             return handleException(e, "Erro ao buscar reservas");
         }
     }
 
-    @GetMapping("/data")
-    public ResponseEntity<?> getReservasByData(@RequestParam LocalDate data) {
-        try {
-            List<Reserva> reservas = reservaService.getReservasByData(data);
-            if (reservas.isEmpty()) {
-                return ResponseEntity.noContent().build();
-            }
-            return ResponseEntity.ok(reservas);
-        } catch (Exception e) {
-            return handleException(e, "Erro ao buscar reservas por data");
-        }
-    }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getReservaById(@PathVariable Long id) {
+    @GetMapping("/listar/{id}")
+    public ResponseEntity<?> obterPorId(@PathVariable Long id) {
         try {
-            Optional<Reserva> reserva = reservaService.getByIdReservas(id);
-            if (reserva.isEmpty()) {
-                return ResponseEntity.notFound().build();
-            }
-            return ResponseEntity.ok(reserva.get());
+            return ResponseEntity.ok(reservaService.findById(id));
         } catch (Exception e) {
             return handleException(e, "Erro ao buscar reserva por ID");
         }
     }
 
-    @PostMapping
-    public ResponseEntity<?> create(@RequestBody Reserva reserva) {
+    @PostMapping("/registrar")
+    public ResponseEntity<?> create(@Valid @RequestBody ReservaRequest request) {
         try {
-            if (reserva == null) {
-                return ResponseEntity.badRequest().body("O corpo da requisição não pode ser nulo");
-            }
-            Reserva novaReserva = reservaService.saveReservas(reserva);
-            return ResponseEntity.status(HttpStatus.CREATED).body(novaReserva);
+            return ResponseEntity.status(HttpStatus.CREATED).body(reservaService.save(request));
         } catch (Exception e) {
             return handleException(e, "Erro ao criar reserva");
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteReservas(@PathVariable Long id) {
+    @PutMapping("/atualizar/{id}")
+    public ResponseEntity<?> update(@PathVariable Long id, @Valid @RequestBody ReservaRequest request) {
         try {
-            Optional<Reserva> reserva = reservaService.getByIdReservas(id);
-            if (reserva.isEmpty()) {
-                return ResponseEntity.notFound().build();
-            }
-            reservaService.deleteReservas(id);
+            return ResponseEntity.ok(reservaService.update(id, request));
+        } catch (Exception e) {
+            return handleException(e, "Erro ao atualizar reserva");
+        }
+    }
+
+    @DeleteMapping("/deletar/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        try {
+            reservaService.delete(id);
             return ResponseEntity.ok("Reserva deletada com sucesso");
         } catch (Exception e) {
             return handleException(e, "Erro ao deletar reserva");
         }
     }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateReservas(@PathVariable Long id, @RequestBody Reserva reservaAtualizada) {
-        try {
-            Optional<Reserva> reservaExistente = reservaService.getByIdReservas(id);
-            if (reservaExistente.isEmpty()) {
-                return ResponseEntity.notFound().build();
-            }
-
-            Reserva reserva = reservaExistente.get();
-            reserva.setData(reservaAtualizada.getData());
-            reserva.setHora(reservaAtualizada.getHora());
-            reserva.setNumeroPessoas(reservaAtualizada.getNumeroPessoas());
-            reserva.setNome_responsavel(reservaAtualizada.getNome_responsavel());
-            reserva.setCpf_responsavel(reservaAtualizada.getCpf_responsavel());
-            reserva.setTelefone_responsavel(reservaAtualizada.getTelefone_responsavel());
-
-            Reserva reservaAtualizadaNoBanco = reservaService.saveReservas(reserva);
-            return ResponseEntity.ok(reservaAtualizadaNoBanco);
-        } catch (Exception e) {
-            return handleException(e, "Erro ao atualizar reserva");
-        }
-    }
 }
+

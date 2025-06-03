@@ -1,7 +1,7 @@
 package com.myproject.reserva_restaurantes.controller;
 
 
-import com.myproject.reserva_restaurantes.dto.LoginRequest;
+import com.myproject.reserva_restaurantes.dto.request.LoginRequest;
 import com.myproject.reserva_restaurantes.security.AuthenticationResponse;
 import com.myproject.reserva_restaurantes.service.AuthService;
 import org.springframework.http.HttpStatus;

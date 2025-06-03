@@ -9,5 +9,5 @@ import { FooterComponent } from '../layout/footer/footer.component';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  
+  public title = 'reserva-de-restaurante-front';
 }

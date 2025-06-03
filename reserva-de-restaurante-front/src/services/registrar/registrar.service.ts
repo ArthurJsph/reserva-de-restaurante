@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class RegistrarService {
-  private readonly apiUrl = `${environment.apiUrl}/usuario/register`;
+  private readonly apiUrl = `${environment.apiUrl}/usuario/registrar`;
 
   constructor(private http: HttpClient) {}
 

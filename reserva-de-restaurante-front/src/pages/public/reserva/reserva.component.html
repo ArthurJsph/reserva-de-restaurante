@@ -1,0 +1,78 @@
+<section class="max-w-5xl mx-auto mt-10">
+  <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">
+    Sistema de Reservas
+  </h2>
+
+  <!-- Alerta de sucesso -->
+  <div *ngIf="submitted" class="bg-green-100 border border-green-400 text-green-700 px-6 py-4 rounded text-center mb-6">
+    <p class="text-lg font-semibold">Reserva realizada com sucesso!</p>
+  </div>
+
+  <!-- Formulário -->
+<form (ngSubmit)="onSubmit()" class="bg-white p-6 rounded-lg shadow-md max-w-4xl mx-auto">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+    <!-- Select Restaurante -->
+    <div>
+      <label class="block text-gray-700 font-medium mb-2">Restaurante</label>
+      <select [(ngModel)]="reserva.id_restaurante" name="id_restaurante" required
+        class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-amber-500">
+        <option value="" disabled selected>Selecione um restaurante</option>
+        <option *ngFor="let restaurante of restaurantes" [value]="restaurante.id">
+          {{ restaurante.nome }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Data da Reserva -->
+    <div>
+      <label class="block text-gray-700 font-medium mb-2">Data da Reserva</label>
+      <input [(ngModel)]="reserva.data_reserva" name="data_reserva" required type="date"
+        class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-amber-500" />
+    </div>
+
+    <!-- Hora da Reserva -->
+    <div>
+      <label class="block text-gray-700 font-medium mb-2">Hora da Reserva</label>
+      <input [(ngModel)]="reserva.hora_reserva" name="hora_reserva" required type="time"
+        class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-amber-500" />
+    </div>
+
+    <!-- Número de Pessoas -->
+    <div>
+      <label class="block text-gray-700 font-medium mb-2">Número de Pessoas</label>
+      <input [(ngModel)]="reserva.numero_pessoas" name="numero_pessoas" required type="number" min="1"
+        class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-amber-500" />
+    </div>
+
+    <!-- Nome do Responsável -->
+    <div>
+      <label class="block text-gray-700 font-medium mb-2">Nome do Responsável</label>
+      <input [(ngModel)]="reserva.nome_responsavel" name="nome_responsavel" required type="text" disabled
+        class="w-full p-3 border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed focus:ring-0" />
+    </div>
+
+    <!-- CPF do Responsável -->
+    <div>
+      <label class="block text-gray-700 font-medium mb-2">CPF do Responsável</label>
+      <input [(ngModel)]="reserva.cpf_responsavel" name="cpf_responsavel" required type="text" disabled
+        class="w-full p-3 border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed focus:ring-0" />
+    </div>
+
+    <!-- Telefone do Responsável -->
+    <div>
+      <label class="block text-gray-700 font-medium mb-2">Telefone do Responsável</label>
+      <input [(ngModel)]="reserva.telefone_responsavel" name="telefone_responsavel" required type="tel" disabled
+        class="w-full p-3 border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed focus:ring-0" />
+    </div>
+  </div>
+
+  <div class="mt-8 text-center">
+    <button type="submit"
+      class="bg-amber-600 text-white px-8 py-3 rounded-full font-semibold hover:bg-amber-700 transition duration-300">
+      Criar Reserva
+    </button>
+  </div>
+</form>
+
+</section>

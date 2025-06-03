@@ -1,8 +1,8 @@
 package com.myproject.reserva_restaurantes.controller;
 
-import com.myproject.reserva_restaurantes.Entity.Usuario;
-import com.myproject.reserva_restaurantes.dto.UsuarioRequestDTO;
-import com.myproject.reserva_restaurantes.dto.UsuarioResponseDTO;
+import com.myproject.reserva_restaurantes.model.Usuario;
+import com.myproject.reserva_restaurantes.dto.request.UsuarioRequest;
+import com.myproject.reserva_restaurantes.dto.response.UsuarioResponse;
 import com.myproject.reserva_restaurantes.service.UsuarioService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -19,81 +19,40 @@ import java.util.stream.Collectors;
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
-    private final PasswordEncoder passwordEncoder;
 
-    public UsuarioController(UsuarioService usuarioService, PasswordEncoder passwordEncoder) {
+    public UsuarioController(UsuarioService usuarioService) {
         this.usuarioService = usuarioService;
-        this.passwordEncoder = passwordEncoder;
     }
 
-    @GetMapping
+    @GetMapping("/listar")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<UsuarioResponseDTO>> listarTodos() {
-        List<UsuarioResponseDTO> usuarios = usuarioService.findAll()
-                .stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(usuarios);
+    public ResponseEntity<List<UsuarioResponse>> obterTudo() {
+        return ResponseEntity.ok(usuarioService.findAll());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/listar/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<UsuarioResponseDTO> buscarPorId(@PathVariable Long id) {
-        Usuario usuario = usuarioService.findById(id);
-        return ResponseEntity.ok(convertToDTO(usuario));
+    public ResponseEntity<UsuarioResponse> obterPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(usuarioService.findById(id));
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<UsuarioResponseDTO> criarUsuario(@Valid @RequestBody UsuarioRequestDTO usuarioDTO) {
-        Usuario usuario = convertToEntity(usuarioDTO);
-        usuario.setSenha(passwordEncoder.encode(usuarioDTO.getSenha()));
-        Usuario usuarioSalvo = usuarioService.save(usuario);
-        return ResponseEntity.status(HttpStatus.CREATED).body(convertToDTO(usuarioSalvo));
+    @PostMapping("/registrar")
+    public ResponseEntity<UsuarioResponse> create(@Valid @RequestBody UsuarioRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.registerNewUser(request));
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/atualizar/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<UsuarioResponseDTO> atualizarUsuario(
+    public ResponseEntity<UsuarioResponse> update(
             @PathVariable Long id,
-            @Valid @RequestBody UsuarioRequestDTO usuarioDTO) {
-
-        Usuario usuarioExistente = usuarioService.findById(id);
-        usuarioExistente.setNome(usuarioDTO.getNome());
-        usuarioExistente.setCpf(usuarioDTO.getCpf());
-        usuarioExistente.setTelefone(usuarioDTO.getTelefone());
-        usuarioExistente.setEmail(usuarioDTO.getEmail());
-
-        if (usuarioDTO.getSenha() != null && !usuarioDTO.getSenha().trim().isEmpty()) {
-            usuarioExistente.setSenha(passwordEncoder.encode(usuarioDTO.getSenha().trim()));
-        }
-        Usuario usuarioAtualizado = usuarioService.save(usuarioExistente);
-        return ResponseEntity.ok(convertToDTO(usuarioAtualizado));
+            @Valid @RequestBody UsuarioRequest request) {
+        return ResponseEntity.ok(usuarioService.update(id, request));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/deletar/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> deletarUsuario(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         usuarioService.delete(id);
         return ResponseEntity.noContent().build();
-    }
-
-    private UsuarioResponseDTO convertToDTO(Usuario usuario) {
-        UsuarioResponseDTO dto = new UsuarioResponseDTO();
-        dto.setId(usuario.getId());
-        dto.setNome(usuario.getNome());
-        dto.setEmail(usuario.getEmail());
-        dto.setRole(usuario.getRole());
-        return dto;
-    }
-
-    private Usuario convertToEntity(UsuarioRequestDTO dto) {
-        Usuario usuario = new Usuario();
-        usuario.setNome(dto.getNome());
-        usuario.setCpf(dto.getCpf());
-        usuario.setTelefone(dto.getTelefone());
-        usuario.setEmail(dto.getEmail());
-        usuario.setSenha(passwordEncoder.encode(dto.getSenha().trim()));
-        usuario.setRole(dto.getRole());
-        return usuario;
     }
 }
