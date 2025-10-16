@@ -1,0 +1,23 @@
+# Root
+.env
+.env.*
+!.env.example
+
+# Node/Angular
+reserva-de-restaurante-front/node_modules/
+reserva-de-restaurante-front/dist/
+reserva-de-restaurante-front/.angular/
+
+# Frontend envs (generated)
+reserva-de-restaurante-front/src/environments/environment.ts
+reserva-de-restaurante-front/src/environments/environment.prod.ts
+
+# Java/Maven
+reserva-restaurantes/target/
+reserva-restaurantes/.idea/
+reserva-restaurantes/.classpath
+reserva-restaurantes/.project
+reserva-restaurantes/.settings/
+
+# VSCode
+.vscode/

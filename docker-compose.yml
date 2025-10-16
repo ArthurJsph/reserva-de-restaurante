@@ -1,0 +1,58 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: ${COMPOSE_PROJECT_NAME:-reserva}_postgres
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - backend_network
+
+  backend:
+    build:
+      context: ./reserva-restaurantes  # pasta backend
+    container_name: ${COMPOSE_PROJECT_NAME:-reserva}_backend
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-prod}
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      SERVER_PORT: 8080
+    ports:
+      - "${BACKEND_PORT:-8080}:8080"
+    depends_on:
+      - postgres
+    networks:
+      - backend_network
+
+  frontend:
+    build:
+      context: ./reserva-de-restaurante-front  # pasta frontend
+      dockerfile: Dockerfile
+      args:
+        API_URL: ${API_URL:-http://localhost:8080/api}
+        APP_NAME: ${APP_NAME:-Reserva de Restaurante}
+    container_name: ${COMPOSE_PROJECT_NAME:-reserva}_frontend
+    environment:
+      API_URL: ${API_URL:-http://localhost:8080/api}
+      APP_NAME: ${APP_NAME:-Reserva de Restaurante}
+    ports:
+      - "${FRONTEND_PORT:-4200}:80"
+    depends_on:
+      - backend
+    networks:
+      - backend_network
+
+volumes:
+  db_data:
+
+networks:
+  backend_network:
+    driver: bridge
