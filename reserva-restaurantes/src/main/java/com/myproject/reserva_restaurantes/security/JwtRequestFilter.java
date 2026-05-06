@@ -1,4 +1,4 @@
-package com.win.win_market.security;
+package com.myproject.reserva_restaurantes.security;
 
 import com.myproject.reserva_restaurantes.service.CustomUserDetailsService;
 import io.jsonwebtoken.Claims;
@@ -73,5 +73,3 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 }
-
-
